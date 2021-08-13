@@ -1,6 +1,8 @@
 package io.github.attilabecsvardi.pega.jdbc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.attilabecsvardi.jersey.client.JDBCMethod;
+import io.github.attilabecsvardi.jersey.client.MethodResponse;
 import io.github.attilabecsvardi.jersey.client.Parameter;
 import io.github.attilabecsvardi.jersey.client.RestClient;
 import jakarta.ws.rs.core.Response;
@@ -32,26 +34,28 @@ import java.util.ArrayList;
  */
 public class PegaStatement implements Statement {
 
-    protected PegaConnection conn;
+    private static final String REMOTE_INSTANCE_NAME = "Statement";
+    private PegaConnection conn;
     private RestClient client;
+    private PegaResultSet resultSet;
 
-    public PegaStatement(PegaConnection conn) throws SQLException {
+    public PegaStatement(PegaConnection conn) {
         this.conn = conn;
         this.client = conn.getClient();
+    }
 
-        // create a Statement object on the server side
-        JDBCMethod method = new JDBCMethod("createStatement", null);
-        Response response = null;
-        try {
-            response = client.invokeJDBCMethod("Connection", method);
+    private MethodResponse callRemoteMethod(JDBCMethod method) throws Exception {
+        try (Response response = client.invokeJDBCMethod(REMOTE_INSTANCE_NAME, method)) {
 
             if (response.getStatus() != 200) {
-                throw new SQLException("Failed to create a SQLStatement");
+                throw new SQLException("Failed to call " + method.getMethodName());
+            } else {
+                String s = response.readEntity(String.class);
+                ObjectMapper objectMapper = new ObjectMapper();
+                return objectMapper.readValue(s, MethodResponse.class);
             }
         } catch (Exception e) {
-            throw new SQLException(e.toString());
-        } finally {
-            response.close();
+            throw e;
         }
     }
 
@@ -78,24 +82,17 @@ public class PegaStatement implements Statement {
      */
     public ResultSet executeQuery(String sql) throws SQLException {
         // execute sql query on the server side
-        ArrayList<Parameter> paramList = new ArrayList<Parameter>();
+        ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", sql));
         JDBCMethod method = new JDBCMethod("executeQuery", paramList);
-        Response response = null;
-
         try {
-            response = client.invokeJDBCMethod("Statement", method);
-
-            if (response.getStatus() != 200) {
-                throw new SQLException("Failed to execute the query");
-            }
+            callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        } finally {
-            response.close();
         }
 
-        return new PegaResultSet(conn, this, sql);
+        resultSet = new PegaResultSet(conn, this, sql);
+        return resultSet;
     }
 
     /**
@@ -121,7 +118,16 @@ public class PegaStatement implements Statement {
      *                             the currently running {@code Statement}
      */
     public int executeUpdate(String sql) throws SQLException {
-        return 0;
+        // execute sql query on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", sql));
+        JDBCMethod method = new JDBCMethod("executeUpdate", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Integer.parseInt(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -142,7 +148,13 @@ public class PegaStatement implements Statement {
      * @throws SQLException if a database access error occurs
      */
     public void close() throws SQLException {
-
+        // execute sql query on the server side
+        JDBCMethod method = new JDBCMethod("close", null);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -162,7 +174,14 @@ public class PegaStatement implements Statement {
      * @see #setMaxFieldSize
      */
     public int getMaxFieldSize() throws SQLException {
-        return 0;
+        // execute sql query on the server side
+        JDBCMethod method = new JDBCMethod("getMaxFieldSize", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Integer.parseInt(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -185,7 +204,15 @@ public class PegaStatement implements Statement {
      * @see #getMaxFieldSize
      */
     public void setMaxFieldSize(int max) throws SQLException {
-
+        // execute sql query on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(max)));
+        JDBCMethod method = new JDBCMethod("setMaxFieldSize", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -202,7 +229,14 @@ public class PegaStatement implements Statement {
      * @see #setMaxRows
      */
     public int getMaxRows() throws SQLException {
-        return 0;
+        // execute sql query on the server side
+        JDBCMethod method = new JDBCMethod("getMaxRows", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Integer.parseInt(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -219,7 +253,15 @@ public class PegaStatement implements Statement {
      * @see #getMaxRows
      */
     public void setMaxRows(int max) throws SQLException {
-
+        // execute sql query on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(max)));
+        JDBCMethod method = new JDBCMethod("setMaxRows", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -245,7 +287,15 @@ public class PegaStatement implements Statement {
      *                      this method is called on a closed <code>Statement</code>
      */
     public void setEscapeProcessing(boolean enable) throws SQLException {
-
+        // execute sql query on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("boolean", String.valueOf(enable)));
+        JDBCMethod method = new JDBCMethod("setEscapeProcessing", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -261,7 +311,14 @@ public class PegaStatement implements Statement {
      * @see #setQueryTimeout
      */
     public int getQueryTimeout() throws SQLException {
-        return 0;
+        // execute sql query on the server side
+        JDBCMethod method = new JDBCMethod("getQueryTimeout", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Integer.parseInt(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -291,7 +348,15 @@ public class PegaStatement implements Statement {
      * @see #getQueryTimeout
      */
     public void setQueryTimeout(int seconds) throws SQLException {
-
+        // execute sql query on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(seconds)));
+        JDBCMethod method = new JDBCMethod("setQueryTimeout", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -306,7 +371,13 @@ public class PegaStatement implements Statement {
      *                                         this method
      */
     public void cancel() throws SQLException {
-
+        // execute sql query on the server side
+        JDBCMethod method = new JDBCMethod("cancel", null);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -330,7 +401,7 @@ public class PegaStatement implements Statement {
      *                      this method is called on a closed <code>Statement</code>
      */
     public SQLWarning getWarnings() throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     /**
@@ -344,7 +415,13 @@ public class PegaStatement implements Statement {
      *                      this method is called on a closed <code>Statement</code>
      */
     public void clearWarnings() throws SQLException {
-
+        // execute sql query on the server side
+        JDBCMethod method = new JDBCMethod("clearWarnings", null);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -371,7 +448,15 @@ public class PegaStatement implements Statement {
      * @throws SQLFeatureNotSupportedException if the JDBC driver does not support this method
      */
     public void setCursorName(String name) throws SQLException {
-
+        // execute sql query on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", name));
+        JDBCMethod method = new JDBCMethod("setCursorName", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -408,7 +493,18 @@ public class PegaStatement implements Statement {
      * @see #getMoreResults
      */
     public boolean execute(String sql) throws SQLException {
-        return false;
+        // execute sql query on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", sql));
+        JDBCMethod method = new JDBCMethod("execute", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
+
+        //return resultSet;
     }
 
     /**
@@ -422,7 +518,16 @@ public class PegaStatement implements Statement {
      * @see #execute
      */
     public ResultSet getResultSet() throws SQLException {
-        return null;
+        // call the method on the server side
+        JDBCMethod method = new JDBCMethod("getResultSet", null);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
+
+        resultSet = new PegaResultSet(conn, this, null);
+        return resultSet;
     }
 
     /**
@@ -437,7 +542,14 @@ public class PegaStatement implements Statement {
      * @see #execute
      */
     public int getUpdateCount() throws SQLException {
-        return 0;
+        // execute sql query on the server side
+        JDBCMethod method = new JDBCMethod("getUpdateCount", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Integer.parseInt(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -460,7 +572,14 @@ public class PegaStatement implements Statement {
      * @see #execute
      */
     public boolean getMoreResults() throws SQLException {
-        return false;
+        // execute sql query on the server side
+        JDBCMethod method = new JDBCMethod("getMoreResults", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -479,7 +598,14 @@ public class PegaStatement implements Statement {
      * @since 1.2
      */
     public int getFetchDirection() throws SQLException {
-        return 0;
+        // execute sql query on the server side
+        JDBCMethod method = new JDBCMethod("getFetchDirection", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Integer.parseInt(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -503,7 +629,15 @@ public class PegaStatement implements Statement {
      * @since 1.2
      */
     public void setFetchDirection(int direction) throws SQLException {
-
+        // execute sql query on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(direction)));
+        JDBCMethod method = new JDBCMethod("setFetchDirection", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -522,7 +656,14 @@ public class PegaStatement implements Statement {
      * @since 1.2
      */
     public int getFetchSize() throws SQLException {
-        return 0;
+        // execute sql query on the server side
+        JDBCMethod method = new JDBCMethod("getFetchSize", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Integer.parseInt(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -540,7 +681,15 @@ public class PegaStatement implements Statement {
      * @since 1.2
      */
     public void setFetchSize(int rows) throws SQLException {
-
+        // execute sql query on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(rows)));
+        JDBCMethod method = new JDBCMethod("setFetchSize", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -554,7 +703,14 @@ public class PegaStatement implements Statement {
      * @since 1.2
      */
     public int getResultSetConcurrency() throws SQLException {
-        return 0;
+        // execute sql query on the server side
+        JDBCMethod method = new JDBCMethod("getResultSetConcurrency", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Integer.parseInt(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -569,7 +725,14 @@ public class PegaStatement implements Statement {
      * @since 1.2
      */
     public int getResultSetType() throws SQLException {
-        return 0;
+        // execute sql query on the server side
+        JDBCMethod method = new JDBCMethod("getResultSetType", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Integer.parseInt(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -591,7 +754,15 @@ public class PegaStatement implements Statement {
      * @since 1.2
      */
     public void addBatch(String sql) throws SQLException {
-
+        // execute sql query on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", sql));
+        JDBCMethod method = new JDBCMethod("addBatch", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -607,7 +778,13 @@ public class PegaStatement implements Statement {
      * @since 1.2
      */
     public void clearBatch() throws SQLException {
-
+        // execute sql query on the server side
+        JDBCMethod method = new JDBCMethod("clearBatch", null);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -665,7 +842,7 @@ public class PegaStatement implements Statement {
      * @since 1.2
      */
     public int[] executeBatch() throws SQLException {
-        return new int[0];
+        throw new SQLFeatureNotSupportedException();
     }
 
     /**
@@ -678,7 +855,7 @@ public class PegaStatement implements Statement {
      * @since 1.2
      */
     public Connection getConnection() throws SQLException {
-        return null;
+        return conn;
     }
 
     /**
@@ -719,7 +896,16 @@ public class PegaStatement implements Statement {
      * @since 1.4
      */
     public boolean getMoreResults(int current) throws SQLException {
-        return false;
+        // execute sql query on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(current)));
+        JDBCMethod method = new JDBCMethod("getMoreResults", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -739,7 +925,7 @@ public class PegaStatement implements Statement {
      * @since 1.4
      */
     public ResultSet getGeneratedKeys() throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     /**
@@ -778,7 +964,7 @@ public class PegaStatement implements Statement {
      * @since 1.4
      */
     public int executeUpdate(String sql, int autoGeneratedKeys) throws SQLException {
-        return 0;
+        throw new SQLFeatureNotSupportedException();
     }
 
     /**
@@ -814,7 +1000,7 @@ public class PegaStatement implements Statement {
      * @since 1.4
      */
     public int executeUpdate(String sql, int[] columnIndexes) throws SQLException {
-        return 0;
+        throw new SQLFeatureNotSupportedException();
     }
 
     /**
@@ -851,7 +1037,7 @@ public class PegaStatement implements Statement {
      * @since 1.4
      */
     public int executeUpdate(String sql, String[] columnNames) throws SQLException {
-        return 0;
+        throw new SQLFeatureNotSupportedException();
     }
 
     /**
@@ -906,7 +1092,7 @@ public class PegaStatement implements Statement {
      * @since 1.4
      */
     public boolean execute(String sql, int autoGeneratedKeys) throws SQLException {
-        return false;
+        throw new SQLFeatureNotSupportedException("boolean execute(String sql, int autoGeneratedKeys)");
     }
 
     /**
@@ -957,7 +1143,7 @@ public class PegaStatement implements Statement {
      * @since 1.4
      */
     public boolean execute(String sql, int[] columnIndexes) throws SQLException {
-        return false;
+        throw new SQLFeatureNotSupportedException("boolean execute(String sql, int[] columnIndexes)");
     }
 
     /**
@@ -1009,7 +1195,7 @@ public class PegaStatement implements Statement {
      * @since 1.4
      */
     public boolean execute(String sql, String[] columnNames) throws SQLException {
-        return false;
+        throw new SQLFeatureNotSupportedException("boolean execute(String sql, String[] columnNames)");
     }
 
     /**
@@ -1023,7 +1209,14 @@ public class PegaStatement implements Statement {
      * @since 1.4
      */
     public int getResultSetHoldability() throws SQLException {
-        return 0;
+        // execute sql query on the server side
+        JDBCMethod method = new JDBCMethod("getResultSetHoldability", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Integer.parseInt(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1035,7 +1228,14 @@ public class PegaStatement implements Statement {
      * @since 1.6
      */
     public boolean isClosed() throws SQLException {
-        return false;
+        // execute sql query on the server side
+        JDBCMethod method = new JDBCMethod("isClosed", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1054,7 +1254,14 @@ public class PegaStatement implements Statement {
      * <p>
      */
     public boolean isPoolable() throws SQLException {
-        return false;
+        // execute sql query on the server side
+        JDBCMethod method = new JDBCMethod("isPoolable", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1081,7 +1288,15 @@ public class PegaStatement implements Statement {
      * @since 1.6
      */
     public void setPoolable(boolean poolable) throws SQLException {
-
+        // execute sql query on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("boolean", String.valueOf(poolable)));
+        JDBCMethod method = new JDBCMethod("setPoolable", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1100,7 +1315,13 @@ public class PegaStatement implements Statement {
      * @since 1.7
      */
     public void closeOnCompletion() throws SQLException {
-
+        // execute sql query on the server side
+        JDBCMethod method = new JDBCMethod("closeOnCompletion", null);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1114,7 +1335,14 @@ public class PegaStatement implements Statement {
      * @since 1.7
      */
     public boolean isCloseOnCompletion() throws SQLException {
-        return false;
+        // execute sql query on the server side
+        JDBCMethod method = new JDBCMethod("isCloseOnCompletion", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1135,7 +1363,7 @@ public class PegaStatement implements Statement {
      * @since 1.6
      */
     public <T> T unwrap(Class<T> iface) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     /**
@@ -1154,6 +1382,6 @@ public class PegaStatement implements Statement {
      * @since 1.6
      */
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        return false;
+        throw new SQLFeatureNotSupportedException();
     }
 }

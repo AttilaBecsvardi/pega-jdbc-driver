@@ -113,11 +113,7 @@ public class PegaDriver implements java.sql.Driver {
         if (url == null) {
             //throw DbException.getJdbcSQLException(ErrorCode.URL_FORMAT_ERROR_2, null, Constants.URL_FORMAT, null);
             throw new SQLException("URL_FORMAT_ERROR");
-        } else if (url.startsWith(Constants.START_URL)) {
-            return true;
-        } else {
-            return false;
-        }
+        } else return url.startsWith(Constants.START_URL);
     }
 
     /**
@@ -140,7 +136,7 @@ public class PegaDriver implements java.sql.Driver {
      * @throws SQLException if a database access error occurs
      */
     public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException {
-        return new DriverPropertyInfo[0];
+        throw new SQLFeatureNotSupportedException("DriverPropertyInfo[] getPropertyInfo(String url, Properties info)");
     }
 
     /**
@@ -198,6 +194,6 @@ public class PegaDriver implements java.sql.Driver {
      * @since 1.7
      */
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Logger getParentLogger()");
     }
 }

@@ -39,16 +39,30 @@ import java.util.Map;
  */
 public class PegaResultSet implements ResultSet {
 
+    private static final String REMOTE_INSTANCE_NAME = "ResultSet";
     private PegaConnection conn;
     private PegaStatement stat;
-    private String sql;
     private RestClient client;
 
     public PegaResultSet(PegaConnection conn, PegaStatement stat, String sql) {
         this.conn = conn;
         this.stat = stat;
-        this.sql = sql;
         this.client = conn.getClient();
+    }
+
+    private MethodResponse callRemoteMethod(JDBCMethod method) throws Exception {
+        try (Response response = client.invokeJDBCMethod(REMOTE_INSTANCE_NAME, method)) {
+
+            if (response.getStatus() != 200) {
+                throw new SQLException("Failed to call " + method.getMethodName());
+            } else {
+                String s = response.readEntity(String.class);
+                ObjectMapper objectMapper = new ObjectMapper();
+                return objectMapper.readValue(s, MethodResponse.class);
+            }
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     /**
@@ -80,23 +94,11 @@ public class PegaResultSet implements ResultSet {
     public boolean next() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("next", null);
-        Response response = null;
         try {
-            response = client.invokeJDBCMethod("ResultSet", method);
-
-            if (response.getStatus() != 200) {
-                throw new SQLException("Failed to create a SQLStatement");
-            } else {
-                String s = response.readEntity(String.class);
-                ObjectMapper objectMapper = new ObjectMapper();
-                MethodResponse mr = objectMapper.readValue(s, MethodResponse.class);
-
-                return Boolean.valueOf(mr.getReturnValue());
-            }
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        } finally {
-            response.close();
         }
     }
 
@@ -127,7 +129,13 @@ public class PegaResultSet implements ResultSet {
      * @throws SQLException if a database access error occurs
      */
     public void close() throws SQLException {
-
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("close", null);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -144,7 +152,14 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public boolean wasNull() throws SQLException {
-        return false;
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("wasNull", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -161,26 +176,14 @@ public class PegaResultSet implements ResultSet {
      */
     public String getString(int columnIndex) throws SQLException {
         // call method on the server side
-        ArrayList<Parameter> paramList = new ArrayList<Parameter>();
+        ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(columnIndex)));
         JDBCMethod method = new JDBCMethod("getString", paramList);
-        Response response = null;
         try {
-            response = client.invokeJDBCMethod("ResultSet", method);
-
-            if (response.getStatus() != 200) {
-                throw new SQLException("Failed to create a SQLStatement");
-            } else {
-                String s = response.readEntity(String.class);
-                ObjectMapper objectMapper = new ObjectMapper();
-                MethodResponse mr = objectMapper.readValue(s, MethodResponse.class);
-
-                return mr.getReturnValue();
-            }
+            MethodResponse mr = callRemoteMethod(method);
+            return mr.getReturnValue();
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        } finally {
-            response.close();
         }
     }
 
@@ -204,7 +207,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public boolean getBoolean(int columnIndex) throws SQLException {
-        return false;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        JDBCMethod method = new JDBCMethod("getBoolean", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -220,7 +232,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public byte getByte(int columnIndex) throws SQLException {
-        return 0;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        JDBCMethod method = new JDBCMethod("getByte", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Byte.parseByte(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -236,7 +257,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public short getShort(int columnIndex) throws SQLException {
-        return 0;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        JDBCMethod method = new JDBCMethod("getShort", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Short.parseShort(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -252,7 +282,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public int getInt(int columnIndex) throws SQLException {
-        return 0;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        JDBCMethod method = new JDBCMethod("getInt", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Integer.parseInt(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -268,7 +307,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public long getLong(int columnIndex) throws SQLException {
-        return 0;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        JDBCMethod method = new JDBCMethod("getLong", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Long.parseLong(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -284,7 +332,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public float getFloat(int columnIndex) throws SQLException {
-        return 0;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        JDBCMethod method = new JDBCMethod("getFloat", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Float.parseFloat(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -300,7 +357,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public double getDouble(int columnIndex) throws SQLException {
-        return 0;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        JDBCMethod method = new JDBCMethod("getDouble", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Double.parseDouble(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -321,7 +387,16 @@ public class PegaResultSet implements ResultSet {
      * or {@code getBigDecimal(String columnLabel)}
      */
     public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
-        return null;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        JDBCMethod method = new JDBCMethod("getBigDecimal", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return new BigDecimal(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -338,7 +413,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public byte[] getBytes(int columnIndex) throws SQLException {
-        return new byte[0];
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        JDBCMethod method = new JDBCMethod("getBytes", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return mr.getReturnValue().getBytes();
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -354,7 +438,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public Date getDate(int columnIndex) throws SQLException {
-        return null;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        JDBCMethod method = new JDBCMethod("getDate", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Date.valueOf(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -370,7 +463,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public Time getTime(int columnIndex) throws SQLException {
-        return null;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        JDBCMethod method = new JDBCMethod("getTime", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Time.valueOf(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -386,7 +488,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public Timestamp getTimestamp(int columnIndex) throws SQLException {
-        return null;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        JDBCMethod method = new JDBCMethod("getTimestamp", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Timestamp.valueOf(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -415,7 +526,7 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public InputStream getAsciiStream(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("InputStream getAsciiStream(int columnIndex)");
     }
 
     /**
@@ -451,7 +562,7 @@ public class PegaResultSet implements ResultSet {
      * <code>getUnicodeStream</code>
      */
     public InputStream getUnicodeStream(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("InputStream getUnicodeStream(int columnIndex)");
     }
 
     /**
@@ -478,7 +589,7 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public InputStream getBinaryStream(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("InputStream getBinaryStream(int columnIndex)");
     }
 
     /**
@@ -494,7 +605,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public String getString(String columnLabel) throws SQLException {
-        return null;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        JDBCMethod method = new JDBCMethod("getString", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return mr.getReturnValue();
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -517,7 +637,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public boolean getBoolean(String columnLabel) throws SQLException {
-        return false;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        JDBCMethod method = new JDBCMethod("getBoolean", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -533,7 +662,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public byte getByte(String columnLabel) throws SQLException {
-        return 0;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        JDBCMethod method = new JDBCMethod("getByte", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Byte.parseByte(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -549,7 +687,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public short getShort(String columnLabel) throws SQLException {
-        return 0;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        JDBCMethod method = new JDBCMethod("getShort", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Short.parseShort(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -565,7 +712,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public int getInt(String columnLabel) throws SQLException {
-        return 0;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        JDBCMethod method = new JDBCMethod("getInt", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Integer.parseInt(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -581,7 +737,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public long getLong(String columnLabel) throws SQLException {
-        return 0;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        JDBCMethod method = new JDBCMethod("getLong", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Long.parseLong(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -597,7 +762,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public float getFloat(String columnLabel) throws SQLException {
-        return 0;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        JDBCMethod method = new JDBCMethod("getFloat", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Float.parseFloat(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -613,7 +787,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public double getDouble(String columnLabel) throws SQLException {
-        return 0;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        JDBCMethod method = new JDBCMethod("getDouble", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Double.parseDouble(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -634,7 +817,16 @@ public class PegaResultSet implements ResultSet {
      * or {@code getBigDecimal(String columnLabel)}
      */
     public BigDecimal getBigDecimal(String columnLabel, int scale) throws SQLException {
-        return null;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        JDBCMethod method = new JDBCMethod("getBigDecimal", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return new BigDecimal(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -651,7 +843,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public byte[] getBytes(String columnLabel) throws SQLException {
-        return new byte[0];
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        JDBCMethod method = new JDBCMethod("getBytes", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return mr.getReturnValue().getBytes();
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -667,7 +868,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public Date getDate(String columnLabel) throws SQLException {
-        return null;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        JDBCMethod method = new JDBCMethod("getDate", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Date.valueOf(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -684,7 +894,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public Time getTime(String columnLabel) throws SQLException {
-        return null;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        JDBCMethod method = new JDBCMethod("getTime", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Time.valueOf(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -700,7 +919,16 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public Timestamp getTimestamp(String columnLabel) throws SQLException {
-        return null;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        JDBCMethod method = new JDBCMethod("getTimestamp", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Timestamp.valueOf(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -728,7 +956,7 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public InputStream getAsciiStream(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("InputStream getAsciiStream(String columnLabel)");
     }
 
     /**
@@ -763,7 +991,7 @@ public class PegaResultSet implements ResultSet {
      * @deprecated use <code>getCharacterStream</code> instead
      */
     public InputStream getUnicodeStream(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("InputStream getUnicodeStream(String columnLabel)");
     }
 
     /**
@@ -790,7 +1018,7 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public InputStream getBinaryStream(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("InputStream getBinaryStream(String columnLabel)");
     }
 
     /**
@@ -817,7 +1045,7 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public SQLWarning getWarnings() throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("SQLWarning getWarnings()");
     }
 
     /**
@@ -830,7 +1058,13 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public void clearWarnings() throws SQLException {
-
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("clearWarnings", null);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -856,7 +1090,14 @@ public class PegaResultSet implements ResultSet {
      *                                         this method
      */
     public String getCursorName() throws SQLException {
-        return null;
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("getCursorName", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return mr.getReturnValue();
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -868,7 +1109,15 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public ResultSetMetaData getMetaData() throws SQLException {
-        return null;
+        // create a ResultSetMetaData object on the server side
+        JDBCMethod method = new JDBCMethod("getMetaData", null);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
+
+        return new PegaResultSetMetaData(conn);
     }
 
     /**
@@ -910,7 +1159,8 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public Object getObject(int columnIndex) throws SQLException {
-        return null;
+        return getString(columnIndex);
+        //throw new SQLFeatureNotSupportedException("Object getObject(int columnIndex)");
     }
 
     /**
@@ -942,7 +1192,7 @@ public class PegaResultSet implements ResultSet {
      *                      called on a closed result set
      */
     public Object getObject(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Object getObject(String columnLabel)");
     }
 
     /**
@@ -956,7 +1206,16 @@ public class PegaResultSet implements ResultSet {
      *                      or this method is called on a closed result set
      */
     public int findColumn(String columnLabel) throws SQLException {
-        return 0;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        JDBCMethod method = new JDBCMethod("findColumn", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Integer.parseInt(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -974,7 +1233,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public Reader getCharacterStream(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Reader getCharacterStream(int columnIndex)");
     }
 
     /**
@@ -992,7 +1251,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public Reader getCharacterStream(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Reader getCharacterStream(String columnLabel)");
     }
 
     /**
@@ -1010,7 +1269,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
-        return null;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        JDBCMethod method = new JDBCMethod("getBigDecimal", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return new BigDecimal(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1028,7 +1296,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public BigDecimal getBigDecimal(String columnLabel) throws SQLException {
-        return null;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        JDBCMethod method = new JDBCMethod("getBigDecimal", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return new BigDecimal(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1049,7 +1326,14 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public boolean isBeforeFirst() throws SQLException {
-        return false;
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("isBeforeFirst", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1070,7 +1354,14 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public boolean isAfterLast() throws SQLException {
-        return false;
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("isAfterLast", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1090,7 +1381,14 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public boolean isFirst() throws SQLException {
-        return false;
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("isFirst", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1114,7 +1412,14 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public boolean isLast() throws SQLException {
-        return false;
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("isLast", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1130,7 +1435,13 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void beforeFirst() throws SQLException {
-
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("beforeFirst", null);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1146,7 +1457,13 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void afterLast() throws SQLException {
-
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("afterLast", null);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1163,7 +1480,14 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public boolean first() throws SQLException {
-        return false;
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("first", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1180,7 +1504,14 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public boolean last() throws SQLException {
-        return false;
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("last", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1199,7 +1530,14 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public int getRow() throws SQLException {
-        return 0;
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("getRow", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Integer.parseInt(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1246,7 +1584,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public boolean absolute(int row) throws SQLException {
-        return false;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(row)));
+        JDBCMethod method = new JDBCMethod("absolute", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1274,7 +1621,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public boolean relative(int rows) throws SQLException {
-        return false;
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(rows)));
+        JDBCMethod method = new JDBCMethod("relative", paramList);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1301,7 +1657,14 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public boolean previous() throws SQLException {
-        return false;
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("previous", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1315,7 +1678,14 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public int getFetchDirection() throws SQLException {
-        return 0;
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("getFetchDirection", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Integer.parseInt(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1339,7 +1709,15 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void setFetchDirection(int direction) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(direction)));
+        JDBCMethod method = new JDBCMethod("setFetchDirection", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1353,7 +1731,14 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public int getFetchSize() throws SQLException {
-        return 0;
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("getFetchSize", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Integer.parseInt(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1374,7 +1759,15 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void setFetchSize(int rows) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(rows)));
+        JDBCMethod method = new JDBCMethod("setFetchSize", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1390,7 +1783,14 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public int getType() throws SQLException {
-        return 0;
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("getType", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Integer.parseInt(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1406,7 +1806,14 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public int getConcurrency() throws SQLException {
-        return 0;
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("getConcurrency", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Integer.parseInt(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1426,7 +1833,14 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public boolean rowUpdated() throws SQLException {
-        return false;
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("rowUpdated", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1447,7 +1861,14 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public boolean rowInserted() throws SQLException {
-        return false;
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("rowInserted", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1469,7 +1890,14 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public boolean rowDeleted() throws SQLException {
-        return false;
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("rowDeleted", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1490,7 +1918,15 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateNull(int columnIndex) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        JDBCMethod method = new JDBCMethod("updateNull", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1511,7 +1947,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateBoolean(int columnIndex, boolean x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        paramList.add(new Parameter("boolean", String.valueOf(x)));
+        JDBCMethod method = new JDBCMethod("updateBoolean", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1532,7 +1977,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateByte(int columnIndex, byte x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        paramList.add(new Parameter("byte", String.valueOf(x)));
+        JDBCMethod method = new JDBCMethod("updateByte", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1553,7 +2007,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateShort(int columnIndex, short x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        paramList.add(new Parameter("short", String.valueOf(x)));
+        JDBCMethod method = new JDBCMethod("updateShort", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1574,7 +2037,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateInt(int columnIndex, int x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        paramList.add(new Parameter("int", String.valueOf(x)));
+        JDBCMethod method = new JDBCMethod("updateInt", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1595,7 +2067,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateLong(int columnIndex, long x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        paramList.add(new Parameter("long", String.valueOf(x)));
+        JDBCMethod method = new JDBCMethod("updateLong", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1616,7 +2097,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateFloat(int columnIndex, float x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        paramList.add(new Parameter("float", String.valueOf(x)));
+        JDBCMethod method = new JDBCMethod("updateFloat", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1637,7 +2127,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateDouble(int columnIndex, double x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        paramList.add(new Parameter("double", String.valueOf(x)));
+        JDBCMethod method = new JDBCMethod("updateDouble", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1659,7 +2158,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateBigDecimal(int columnIndex, BigDecimal x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        paramList.add(new Parameter("java.math.BigDecimal", String.valueOf(x)));
+        JDBCMethod method = new JDBCMethod("updateBigDecimal", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1680,7 +2188,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateString(int columnIndex, String x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        paramList.add(new Parameter("java.math.String", x));
+        JDBCMethod method = new JDBCMethod("updateString", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1701,7 +2218,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateBytes(int columnIndex, byte[] x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateBytes(int columnIndex, byte[] x)");
     }
 
     /**
@@ -1722,7 +2239,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateDate(int columnIndex, Date x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        paramList.add(new Parameter("java.sql.Date", x.toString()));
+        JDBCMethod method = new JDBCMethod("updateDate", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1743,7 +2269,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateTime(int columnIndex, Time x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        paramList.add(new Parameter("java.sql.Time", x.toString()));
+        JDBCMethod method = new JDBCMethod("updateTime", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1765,7 +2300,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateTimestamp(int columnIndex, Timestamp x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("int", String.valueOf(columnIndex)));
+        paramList.add(new Parameter("java.sql.Timestamp", x.toString()));
+        JDBCMethod method = new JDBCMethod("updateTimestamp", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1788,7 +2332,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateAsciiStream(int columnIndex, InputStream x, int length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateAsciiStream(int columnIndex, InputStream x, int length)");
     }
 
     /**
@@ -1811,7 +2355,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateBinaryStream(int columnIndex, InputStream x, int length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateBinaryStream(int columnIndex, InputStream x, int length)");
     }
 
     /**
@@ -1834,7 +2378,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateCharacterStream(int columnIndex, Reader x, int length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateCharacterStream(int columnIndex, Reader x, int length)");
     }
 
     /**
@@ -1868,7 +2412,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateObject(int columnIndex, Object x, int scaleOrLength) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateObject(int columnIndex, Object x, int scaleOrLength)");
     }
 
     /**
@@ -1890,7 +2434,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateObject(int columnIndex, Object x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateObject(int columnIndex, Object x)");
     }
 
     /**
@@ -1910,7 +2454,15 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateNull(String columnLabel) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        JDBCMethod method = new JDBCMethod("updateNull", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1931,7 +2483,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateBoolean(String columnLabel, boolean x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        paramList.add(new Parameter("boolean", String.valueOf(x)));
+        JDBCMethod method = new JDBCMethod("updateBoolean", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1952,7 +2513,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateByte(String columnLabel, byte x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        paramList.add(new Parameter("byte", String.valueOf(x)));
+        JDBCMethod method = new JDBCMethod("updateByte", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1973,7 +2543,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateShort(String columnLabel, short x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        paramList.add(new Parameter("short", String.valueOf(x)));
+        JDBCMethod method = new JDBCMethod("updateShort", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -1994,7 +2573,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateInt(String columnLabel, int x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        paramList.add(new Parameter("int", String.valueOf(x)));
+        JDBCMethod method = new JDBCMethod("updateInt", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -2015,7 +2603,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateLong(String columnLabel, long x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        paramList.add(new Parameter("long", String.valueOf(x)));
+        JDBCMethod method = new JDBCMethod("updateLong", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -2036,7 +2633,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateFloat(String columnLabel, float x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        paramList.add(new Parameter("float", String.valueOf(x)));
+        JDBCMethod method = new JDBCMethod("updateFloat", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -2057,7 +2663,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateDouble(String columnLabel, double x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        paramList.add(new Parameter("double", String.valueOf(x)));
+        JDBCMethod method = new JDBCMethod("updateDouble", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -2079,7 +2694,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateBigDecimal(String columnLabel, BigDecimal x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        paramList.add(new Parameter("java.math.BigDecimal", x.toString()));
+        JDBCMethod method = new JDBCMethod("updateBigDecimal", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -2100,7 +2724,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateString(String columnLabel, String x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        paramList.add(new Parameter("java.lang.String", x));
+        JDBCMethod method = new JDBCMethod("updateString", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -2122,7 +2755,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateBytes(String columnLabel, byte[] x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateBytes(String columnLabel, byte[] x)");
     }
 
     /**
@@ -2143,7 +2776,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateDate(String columnLabel, Date x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        paramList.add(new Parameter("java.sql.Date", x.toString()));
+        JDBCMethod method = new JDBCMethod("updateDate", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -2164,7 +2806,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateTime(String columnLabel, Time x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        paramList.add(new Parameter("java.sql.Time", x.toString()));
+        JDBCMethod method = new JDBCMethod("updateTime", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -2186,7 +2837,16 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateTimestamp(String columnLabel, Timestamp x) throws SQLException {
-
+        // call method on the server side
+        ArrayList<Parameter> paramList = new ArrayList<>();
+        paramList.add(new Parameter("java.lang.String", columnLabel));
+        paramList.add(new Parameter("java.sql.Timestamp", x.toString()));
+        JDBCMethod method = new JDBCMethod("updateTimestamp", paramList);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -2209,7 +2869,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateAsciiStream(String columnLabel, InputStream x, int length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateAsciiStream(String columnLabel, InputStream x, int length)");
     }
 
     /**
@@ -2232,7 +2892,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateBinaryStream(String columnLabel, InputStream x, int length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateBinaryStream(String columnLabel, InputStream x, int length)");
     }
 
     /**
@@ -2256,7 +2916,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateCharacterStream(String columnLabel, Reader reader, int length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateCharacterStream(String columnLabel, Reader reader, int length)");
     }
 
     /**
@@ -2290,7 +2950,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateObject(String columnLabel, Object x, int scaleOrLength) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateObject(String columnLabel, Object x, int scaleOrLength)");
     }
 
     /**
@@ -2312,7 +2972,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateObject(String columnLabel, Object x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateObject(String columnLabel, Object x)");
     }
 
     /**
@@ -2331,7 +2991,13 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void insertRow() throws SQLException {
-
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("insertRow", null);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -2348,7 +3014,13 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void updateRow() throws SQLException {
-
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("updateRow", null);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -2365,7 +3037,13 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void deleteRow() throws SQLException {
-
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("deleteRow", null);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -2399,7 +3077,13 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void refreshRow() throws SQLException {
-
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("refreshRow", null);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -2422,7 +3106,13 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void cancelRowUpdates() throws SQLException {
-
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("cancelRowUpdates", null);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -2450,7 +3140,13 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void moveToInsertRow() throws SQLException {
-
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("moveToInsertRow", null);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -2466,7 +3162,13 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public void moveToCurrentRow() throws SQLException {
-
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("moveToCurrentRow", null);
+        try {
+            callRemoteMethod(method);
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -2483,8 +3185,8 @@ public class PegaResultSet implements ResultSet {
      *                      or this method is called on a closed result set
      * @since 1.2
      */
-    public Statement getStatement() throws SQLException {
-        return null;
+    public Statement getStatement() {
+        return stat;
     }
 
     /**
@@ -2510,7 +3212,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public Object getObject(int columnIndex, Map<String, Class<?>> map) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Object getObject(int columnIndex, Map<String, Class<?>> map)");
     }
 
     /**
@@ -2529,7 +3231,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public Ref getRef(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Ref getRef(int columnIndex)");
     }
 
     /**
@@ -2548,7 +3250,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public Blob getBlob(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Blob getBlob(int columnIndex)");
     }
 
     /**
@@ -2567,7 +3269,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public Clob getClob(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Clob getClob(int columnIndex)");
     }
 
     /**
@@ -2586,7 +3288,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public Array getArray(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Array getArray(int columnIndex)");
     }
 
     /**
@@ -2611,7 +3313,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public Object getObject(String columnLabel, Map<String, Class<?>> map) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Object getObject(String columnLabel, Map<String, Class<?>> map)");
     }
 
     /**
@@ -2630,7 +3332,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public Ref getRef(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Ref getRef(String columnLabel)");
     }
 
     /**
@@ -2649,7 +3351,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public Blob getBlob(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Blob getBlob(String columnLabel)");
     }
 
     /**
@@ -2668,7 +3370,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public Clob getClob(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Clob getClob(String columnLabel)");
     }
 
     /**
@@ -2687,7 +3389,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public Array getArray(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Array getArray(String columnLabel)");
     }
 
     /**
@@ -2710,7 +3412,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public Date getDate(int columnIndex, Calendar cal) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Date getDate(int columnIndex, Calendar cal)");
     }
 
     /**
@@ -2733,7 +3435,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public Date getDate(String columnLabel, Calendar cal) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Date getDate(String columnLabel, Calendar cal)");
     }
 
     /**
@@ -2756,7 +3458,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public Time getTime(int columnIndex, Calendar cal) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Time getTime(int columnIndex, Calendar cal)");
     }
 
     /**
@@ -2779,7 +3481,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public Time getTime(String columnLabel, Calendar cal) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Time getTime(String columnLabel, Calendar cal)");
     }
 
     /**
@@ -2802,7 +3504,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public Timestamp getTimestamp(int columnIndex, Calendar cal) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Timestamp getTimestamp(int columnIndex, Calendar cal)");
     }
 
     /**
@@ -2825,7 +3527,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.2
      */
     public Timestamp getTimestamp(String columnLabel, Calendar cal) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Timestamp getTimestamp(String columnLabel, Calendar cal)");
     }
 
     /**
@@ -2845,7 +3547,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.4
      */
     public URL getURL(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("URL getURL(int columnIndex)");
     }
 
     /**
@@ -2865,7 +3567,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.4
      */
     public URL getURL(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("URL getURL(String columnLabel)");
     }
 
     /**
@@ -2886,7 +3588,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.4
      */
     public void updateRef(int columnIndex, Ref x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateRef(int columnIndex, Ref x)");
     }
 
     /**
@@ -2907,7 +3609,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.4
      */
     public void updateRef(String columnLabel, Ref x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateRef(String columnLabel, Ref x)");
     }
 
     /**
@@ -2928,7 +3630,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.4
      */
     public void updateBlob(int columnIndex, Blob x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateBlob(int columnIndex, Blob x)");
     }
 
     /**
@@ -2949,7 +3651,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.4
      */
     public void updateBlob(String columnLabel, Blob x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateBlob(String columnLabel, Blob x)");
     }
 
     /**
@@ -2970,7 +3672,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.4
      */
     public void updateClob(int columnIndex, Clob x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateClob(int columnIndex, Clob x)");
     }
 
     /**
@@ -2991,7 +3693,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.4
      */
     public void updateClob(String columnLabel, Clob x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateClob(String columnLabel, Clob x)");
     }
 
     /**
@@ -3012,7 +3714,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.4
      */
     public void updateArray(int columnIndex, Array x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateArray(int columnIndex, Array x)");
     }
 
     /**
@@ -3033,7 +3735,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.4
      */
     public void updateArray(String columnLabel, Array x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateArray(String columnLabel, Array x)");
     }
 
     /**
@@ -3052,7 +3754,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public RowId getRowId(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("RowId getRowId(int columnIndex)");
     }
 
     /**
@@ -3071,7 +3773,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public RowId getRowId(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("RowId getRowId(String columnLabel)");
     }
 
     /**
@@ -3092,7 +3794,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateRowId(int columnIndex, RowId x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateRowId(int columnIndex, RowId x)");
     }
 
     /**
@@ -3113,7 +3815,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateRowId(String columnLabel, RowId x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateRowId(String columnLabel, RowId x)");
     }
 
     /**
@@ -3125,7 +3827,14 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public int getHoldability() throws SQLException {
-        return 0;
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("getHoldability", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Integer.parseInt(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -3137,7 +3846,14 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public boolean isClosed() throws SQLException {
-        return false;
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("isClosed", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return Boolean.parseBoolean(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     /**
@@ -3162,7 +3878,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateNString(int columnIndex, String nString) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateNString(int columnIndex, String nString)");
     }
 
     /**
@@ -3187,7 +3903,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateNString(String columnLabel, String nString) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateNString(String columnLabel, String nString)");
     }
 
     /**
@@ -3210,7 +3926,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateNClob(int columnIndex, NClob nClob) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateNClob(int columnIndex, NClob nClob)");
     }
 
     /**
@@ -3233,7 +3949,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateNClob(String columnLabel, NClob nClob) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateNClob(String columnLabel, NClob nClob)");
     }
 
     /**
@@ -3254,7 +3970,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public NClob getNClob(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("NClob getNClob(int columnIndex)");
     }
 
     /**
@@ -3275,7 +3991,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public NClob getNClob(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("NClob getNClob(String columnLabel)");
     }
 
     /**
@@ -3293,7 +4009,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public SQLXML getSQLXML(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("SQLXML getSQLXML(int columnIndex)");
     }
 
     /**
@@ -3311,7 +4027,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public SQLXML getSQLXML(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("SQLXML getSQLXML(String columnLabel)");
     }
 
     /**
@@ -3340,7 +4056,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateSQLXML(int columnIndex, SQLXML xmlObject) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateSQLXML(int columnIndex, SQLXML xmlObject)");
     }
 
     /**
@@ -3369,7 +4085,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateSQLXML(String columnLabel, SQLXML xmlObject) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateSQLXML(String columnLabel, SQLXML xmlObject)");
     }
 
     /**
@@ -3391,7 +4107,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public String getNString(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("String getNString(int columnIndex)");
     }
 
     /**
@@ -3413,7 +4129,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public String getNString(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("String getNString(String columnLabel)");
     }
 
     /**
@@ -3436,7 +4152,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public Reader getNCharacterStream(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Reader getNCharacterStream(int columnIndex)");
     }
 
     /**
@@ -3459,7 +4175,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public Reader getNCharacterStream(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Reader getNCharacterStream(String columnLabel)");
     }
 
     /**
@@ -3487,7 +4203,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateNCharacterStream(int columnIndex, Reader x, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateNCharacterStream(int columnIndex, Reader x, long length)");
     }
 
     /**
@@ -3516,7 +4232,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateNCharacterStream(String columnLabel, Reader reader, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateNCharacterStream(String columnLabel, Reader reader, long length)");
     }
 
     /**
@@ -3540,7 +4256,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateAsciiStream(int columnIndex, InputStream x, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateAsciiStream(int columnIndex, InputStream x, long length)");
     }
 
     /**
@@ -3564,7 +4280,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateBinaryStream(int columnIndex, InputStream x, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateBinaryStream(int columnIndex, InputStream x, long length)");
     }
 
     /**
@@ -3588,7 +4304,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateCharacterStream(int columnIndex, Reader x, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateCharacterStream(int columnIndex, Reader x, long length)");
     }
 
     /**
@@ -3612,7 +4328,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateAsciiStream(String columnLabel, InputStream x, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateAsciiStream(String columnLabel, InputStream x, long length)");
     }
 
     /**
@@ -3636,7 +4352,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateBinaryStream(String columnLabel, InputStream x, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateBinaryStream(String columnLabel, InputStream x, long length)");
     }
 
     /**
@@ -3661,7 +4377,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateCharacterStream(String columnLabel, Reader reader, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateCharacterStream(String columnLabel, Reader reader, long length)");
     }
 
     /**
@@ -3687,7 +4403,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateBlob(int columnIndex, InputStream inputStream, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateBlob(int columnIndex, InputStream inputStream, long length)");
     }
 
     /**
@@ -3713,7 +4429,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateBlob(String columnLabel, InputStream inputStream, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateBlob(String columnLabel, InputStream inputStream, long length)");
     }
 
     /**
@@ -3742,7 +4458,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateClob(int columnIndex, Reader reader, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateClob(int columnIndex, Reader reader, long length)");
     }
 
     /**
@@ -3771,7 +4487,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateClob(String columnLabel, Reader reader, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateClob(String columnLabel, Reader reader, long length)");
     }
 
     /**
@@ -3802,7 +4518,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateNClob(int columnIndex, Reader reader, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateNClob(int columnIndex, Reader reader, long length)");
     }
 
     /**
@@ -3833,7 +4549,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateNClob(String columnLabel, Reader reader, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateNClob(String columnLabel, Reader reader, long length)");
     }
 
     /**
@@ -3865,7 +4581,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateNCharacterStream(int columnIndex, Reader x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateNCharacterStream(int columnIndex, Reader x)");
     }
 
     /**
@@ -3898,7 +4614,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateNCharacterStream(String columnLabel, Reader reader) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateNCharacterStream(String columnLabel, Reader reader)");
     }
 
     /**
@@ -3926,7 +4642,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateAsciiStream(int columnIndex, InputStream x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateAsciiStream(int columnIndex, InputStream x)");
     }
 
     /**
@@ -3954,7 +4670,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateBinaryStream(int columnIndex, InputStream x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateBinaryStream(int columnIndex, InputStream x)");
     }
 
     /**
@@ -3982,7 +4698,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateCharacterStream(int columnIndex, Reader x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateCharacterStream(int columnIndex, Reader x)");
     }
 
     /**
@@ -4010,7 +4726,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateAsciiStream(String columnLabel, InputStream x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateAsciiStream(String columnLabel, InputStream x)");
     }
 
     /**
@@ -4038,7 +4754,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateBinaryStream(String columnLabel, InputStream x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateBinaryStream(String columnLabel, InputStream x)");
     }
 
     /**
@@ -4066,7 +4782,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateCharacterStream(String columnLabel, Reader reader) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateCharacterStream(String columnLabel, Reader reader)");
     }
 
     /**
@@ -4093,7 +4809,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateBlob(int columnIndex, InputStream inputStream) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateBlob(int columnIndex, InputStream inputStream)");
     }
 
     /**
@@ -4120,7 +4836,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateBlob(String columnLabel, InputStream inputStream) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateBlob(String columnLabel, InputStream inputStream)");
     }
 
     /**
@@ -4151,7 +4867,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateClob(int columnIndex, Reader reader) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateClob(int columnIndex, Reader reader)");
     }
 
     /**
@@ -4181,7 +4897,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateClob(String columnLabel, Reader reader) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateClob(String columnLabel, Reader reader)");
     }
 
     /**
@@ -4214,7 +4930,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateNClob(int columnIndex, Reader reader) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateNClob(int columnIndex, Reader reader)");
     }
 
     /**
@@ -4246,7 +4962,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public void updateNClob(String columnLabel, Reader reader) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("void updateNClob(String columnLabel, Reader reader)");
     }
 
     /**
@@ -4275,7 +4991,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.7
      */
     public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("<T> T getObject(int columnIndex, Class<T> type)");
     }
 
     /**
@@ -4306,7 +5022,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.7
      */
     public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("<T> T getObject(String columnLabel, Class<T> type)");
     }
 
     /**
@@ -4327,7 +5043,7 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public <T> T unwrap(Class<T> iface) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("<T> T unwrap(Class<T> iface)");
     }
 
     /**
@@ -4346,6 +5062,6 @@ public class PegaResultSet implements ResultSet {
      * @since 1.6
      */
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        return false;
+        throw new SQLFeatureNotSupportedException("boolean isWrapperFor(Class<?> iface)");
     }
 }
