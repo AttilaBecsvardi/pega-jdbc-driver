@@ -15,6 +15,7 @@ public class JDBCMethod implements Serializable {
 
     private String methodName;
     private ArrayList<Parameter> paramList;
+    private String retInstanceID;
 
     public JDBCMethod() {
     }
@@ -22,6 +23,12 @@ public class JDBCMethod implements Serializable {
     public JDBCMethod(String methodName, ArrayList<Parameter> paramList) {
         this.methodName = methodName;
         this.paramList = paramList;
+    }
+
+    public JDBCMethod(String methodName, ArrayList<Parameter> paramList, String retInstanceID) {
+        this.methodName = methodName;
+        this.paramList = paramList;
+        this.retInstanceID = retInstanceID;
     }
 
     public String getMethodName() {
@@ -34,5 +41,13 @@ public class JDBCMethod implements Serializable {
 
     public ArrayList<Parameter> getParamList() {
         return paramList;
+    }
+
+    public String getRetInstanceID() {
+        return retInstanceID;
+    }
+
+    public void setRetInstanceID(String retInstanceID) {
+        this.retInstanceID = retInstanceID;
     }
 }

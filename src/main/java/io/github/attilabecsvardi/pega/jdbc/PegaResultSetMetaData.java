@@ -12,20 +12,35 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.ListIterator;
+import java.util.UUID;
 
 public class PegaResultSetMetaData implements ResultSetMetaData {
 
-    private static final String REMOTE_INSTANCE_NAME = "ResultSetMetaData";
+    private static final String REMOTE_INSTANCE_TYPE = "ResultSetMetaData";
+    private final String GUID = "PEGA" + UUID.randomUUID().toString().replace("-", "");
+
     private PegaConnection conn;
     private RestClient client;
+    private MethodResponse mr;
 
-    public PegaResultSetMetaData(PegaConnection conn) {
+    public PegaResultSetMetaData(PegaConnection conn, MethodResponse mr) {
         this.conn = conn;
         this.client = conn.getClient();
+        this.mr = mr;
+    }
+
+    public String getGUID() {
+        return this.GUID;
+    }
+
+    public void setMr(MethodResponse mr) {
+        this.mr = mr;
     }
 
     private MethodResponse callRemoteMethod(JDBCMethod method) throws Exception {
-        try (Response response = client.invokeJDBCMethod(REMOTE_INSTANCE_NAME, method)) {
+        try (Response response = client.invokeJDBCMethod(REMOTE_INSTANCE_TYPE, GUID, method)) {
 
             if (response.getStatus() != 200) {
                 throw new SQLException("Failed to call " + method.getMethodName());
@@ -47,6 +62,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public int getColumnCount() throws SQLException {
+        /*
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getColumnCount", null);
         try {
@@ -54,7 +70,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().size();
     }
 
     /**
@@ -66,6 +83,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public boolean isAutoIncrement(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -75,7 +93,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).isAutoIncrement();
     }
 
     /**
@@ -87,6 +106,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public boolean isCaseSensitive(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -96,7 +116,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).isCaseSensitive();
     }
 
     /**
@@ -108,6 +129,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public boolean isSearchable(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -117,7 +139,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).isSearchable();
     }
 
     /**
@@ -129,6 +152,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public boolean isCurrency(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -138,7 +162,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).isCurrency();
     }
 
     /**
@@ -151,6 +176,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public int isNullable(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -160,7 +186,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).isNullable();
     }
 
     /**
@@ -172,6 +199,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public boolean isSigned(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -181,7 +209,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).isSigned();
     }
 
     /**
@@ -194,6 +223,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public int getColumnDisplaySize(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -203,7 +233,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).getColumnDisplaySize();
     }
 
     /**
@@ -219,6 +250,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public String getColumnLabel(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -228,7 +260,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return mr.getReturnValue();
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).getColumnLabel();
     }
 
     /**
@@ -240,6 +273,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public String getColumnName(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -249,7 +283,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return mr.getReturnValue();
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).getColumnName();
     }
 
     /**
@@ -261,6 +296,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public String getSchemaName(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -270,7 +306,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return mr.getReturnValue();
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).getSchemaName();
     }
 
     /**
@@ -287,6 +324,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public int getPrecision(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -296,7 +334,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).getPrecision();
     }
 
     /**
@@ -309,6 +348,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public int getScale(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -318,7 +358,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).getScale();
     }
 
     /**
@@ -330,6 +371,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public String getTableName(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -339,7 +381,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return mr.getReturnValue();
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).getTableName();
     }
 
     /**
@@ -352,6 +395,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public String getCatalogName(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -361,7 +405,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return mr.getReturnValue();
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).getCatalogName();
     }
 
     /**
@@ -374,6 +419,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public int getColumnType(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -383,7 +429,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).getColumnType();
     }
 
     /**
@@ -396,6 +443,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public String getColumnTypeName(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -405,7 +453,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return mr.getReturnValue();
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).getColumnTypeName();
     }
 
     /**
@@ -417,6 +466,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public boolean isReadOnly(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -426,7 +476,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).isReadOnly();
     }
 
     /**
@@ -438,6 +489,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public boolean isWritable(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -447,7 +499,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).isWritable();
     }
 
     /**
@@ -459,6 +512,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public boolean isDefinitelyWritable(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -468,7 +522,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).isDefinitelyWritable();
     }
 
     /**
@@ -488,6 +543,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
      */
     @Override
     public String getColumnClassName(int column) throws SQLException {
+        /*
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(column)));
@@ -497,7 +553,8 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             return mr.getReturnValue();
         } catch (Exception e) {
             throw new SQLException(e.toString());
-        }
+        }*/
+        return mr.getColumnList().get(column - 1).getColumnClassName();
     }
 
     /**

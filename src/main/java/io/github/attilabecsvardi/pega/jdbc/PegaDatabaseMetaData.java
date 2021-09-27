@@ -9,16 +9,23 @@ import jakarta.ws.rs.core.Response;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class PegaDatabaseMetaData implements DatabaseMetaData {
 
-    private static final String REMOTE_INSTANCE_NAME = "DatabaseMetaData";
+    private static final String REMOTE_INSTANCE_TYPE = "DatabaseMetaData";
+    private final String GUID = "PEGA" + UUID.randomUUID().toString().replace("-", "");
+
     private PegaConnection conn;
     private RestClient client;
 
     public PegaDatabaseMetaData(PegaConnection conn) {
         this.conn = conn;
         this.client = conn.getClient();
+    }
+
+    public String getGUID() {
+        return this.GUID;
     }
 
     private String toCSV(int[] arr) {
@@ -45,7 +52,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     }
 
     private MethodResponse callRemoteMethod(JDBCMethod method) throws Exception {
-        try (Response response = client.invokeJDBCMethod(REMOTE_INSTANCE_NAME, method)) {
+        try (Response response = client.invokeJDBCMethod(REMOTE_INSTANCE_TYPE, GUID, method)) {
 
             if (response.getStatus() != 200) {
                 throw new SQLException("Failed to call " + method.getMethodName());
@@ -2393,19 +2400,23 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getProcedures(String catalog, String schemaPattern, String procedureNamePattern) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
+
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schemaPattern));
         paramList.add(new Parameter("java.lang.String", procedureNamePattern));
-        JDBCMethod method = new JDBCMethod("getProcedures", paramList);
+        JDBCMethod method = new JDBCMethod("getProcedures", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -2503,20 +2514,23 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getProcedureColumns(String catalog, String schemaPattern, String procedureNamePattern, String columnNamePattern) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schemaPattern));
         paramList.add(new Parameter("java.lang.String", procedureNamePattern));
         paramList.add(new Parameter("java.lang.String", columnNamePattern));
-        JDBCMethod method = new JDBCMethod("getProcedureColumns", paramList);
+        JDBCMethod method = new JDBCMethod("getProcedureColumns", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -2567,20 +2581,23 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getTables(String catalog, String schemaPattern, String tableNamePattern, String[] types) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schemaPattern));
         paramList.add(new Parameter("java.lang.String", tableNamePattern));
         paramList.add(new Parameter("[Ljava.lang.String;", toCSV(types)));
-        JDBCMethod method = new JDBCMethod("getTables", paramList);
+        JDBCMethod method = new JDBCMethod("getTables", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -2600,15 +2617,18 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getSchemas() throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
-        JDBCMethod method = new JDBCMethod("getSchemas", null);
+        JDBCMethod method = new JDBCMethod("getSchemas", null, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -2626,15 +2646,18 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getCatalogs() throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
-        JDBCMethod method = new JDBCMethod("getCatalogs", null);
+        JDBCMethod method = new JDBCMethod("getCatalogs", null, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -2654,15 +2677,18 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getTableTypes() throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
-        JDBCMethod method = new JDBCMethod("getTableTypes", null);
+        JDBCMethod method = new JDBCMethod("getTableTypes", null, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -2757,20 +2783,23 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schemaPattern));
         paramList.add(new Parameter("java.lang.String", tableNamePattern));
         paramList.add(new Parameter("java.lang.String", columnNamePattern));
-        JDBCMethod method = new JDBCMethod("getColumns", paramList);
+        JDBCMethod method = new JDBCMethod("getColumns", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -2811,20 +2840,23 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getColumnPrivileges(String catalog, String schema, String table, String columnNamePattern) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schema));
         paramList.add(new Parameter("java.lang.String", table));
         paramList.add(new Parameter("java.lang.String", columnNamePattern));
-        JDBCMethod method = new JDBCMethod("getColumnPrivileges", paramList);
+        JDBCMethod method = new JDBCMethod("getColumnPrivileges", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -2869,19 +2901,22 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getTablePrivileges(String catalog, String schemaPattern, String tableNamePattern) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schemaPattern));
         paramList.add(new Parameter("java.lang.String", tableNamePattern));
-        JDBCMethod method = new JDBCMethod("getTablePrivileges", paramList);
+        JDBCMethod method = new JDBCMethod("getTablePrivileges", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -2937,6 +2972,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getBestRowIdentifier(String catalog, String schema, String table, int scope, boolean nullable) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
@@ -2944,14 +2981,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         paramList.add(new Parameter("java.lang.String", table));
         paramList.add(new Parameter("int", String.valueOf(scope)));
         paramList.add(new Parameter("boolean", String.valueOf(nullable)));
-        JDBCMethod method = new JDBCMethod("getBestRowIdentifier", paramList);
+        JDBCMethod method = new JDBCMethod("getBestRowIdentifier", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -3001,19 +3039,22 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getVersionColumns(String catalog, String schema, String table) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schema));
         paramList.add(new Parameter("java.lang.String", table));
-        JDBCMethod method = new JDBCMethod("getVersionColumns", paramList);
+        JDBCMethod method = new JDBCMethod("getVersionColumns", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -3047,19 +3088,22 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getPrimaryKeys(String catalog, String schema, String table) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schema));
         paramList.add(new Parameter("java.lang.String", table));
-        JDBCMethod method = new JDBCMethod("getPrimaryKeys", paramList);
+        JDBCMethod method = new JDBCMethod("getPrimaryKeys", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -3139,19 +3183,22 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getImportedKeys(String catalog, String schema, String table) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schema));
         paramList.add(new Parameter("java.lang.String", table));
-        JDBCMethod method = new JDBCMethod("getImportedKeys", paramList);
+        JDBCMethod method = new JDBCMethod("getImportedKeys", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -3232,19 +3279,22 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getExportedKeys(String catalog, String schema, String table) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schema));
         paramList.add(new Parameter("java.lang.String", table));
-        JDBCMethod method = new JDBCMethod("getExportedKeys", paramList);
+        JDBCMethod method = new JDBCMethod("getExportedKeys", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -3332,6 +3382,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getCrossReference(String parentCatalog, String parentSchema, String parentTable, String foreignCatalog, String foreignSchema, String foreignTable) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", parentCatalog));
@@ -3340,14 +3392,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         paramList.add(new Parameter("java.lang.String", foreignCatalog));
         paramList.add(new Parameter("java.lang.String", foreignSchema));
         paramList.add(new Parameter("java.lang.String", foreignTable));
-        JDBCMethod method = new JDBCMethod("getCrossReference", paramList);
+        JDBCMethod method = new JDBCMethod("getCrossReference", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -3416,16 +3469,19 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getTypeInfo() throws SQLException {
-        throw new SQLFeatureNotSupportedException("ResultSet getTypeInfo()");
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        //throw new SQLFeatureNotSupportedException("ResultSet getTypeInfo()");
+        MethodResponse mr = null;
         // call method on the server side
-        /*JDBCMethod method = new JDBCMethod("getTypeInfo", null);
+        JDBCMethod method = new JDBCMethod("getTypeInfo", null, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);*/
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -3488,6 +3544,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getIndexInfo(String catalog, String schema, String table, boolean unique, boolean approximate) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
@@ -3495,14 +3553,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         paramList.add(new Parameter("java.lang.String", table));
         paramList.add(new Parameter("boolean", String.valueOf(unique)));
         paramList.add(new Parameter("boolean", String.valueOf(approximate)));
-        JDBCMethod method = new JDBCMethod("getIndexInfo", paramList);
+        JDBCMethod method = new JDBCMethod("getIndexInfo", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -3868,20 +3927,23 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getUDTs(String catalog, String schemaPattern, String typeNamePattern, int[] types) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schemaPattern));
         paramList.add(new Parameter("java.lang.String", typeNamePattern));
         paramList.add(new Parameter("[I]", toCSV(types)));
-        JDBCMethod method = new JDBCMethod("getUDTs", paramList);
+        JDBCMethod method = new JDBCMethod("getUDTs", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -4036,19 +4098,22 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getSuperTypes(String catalog, String schemaPattern, String typeNamePattern) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schemaPattern));
         paramList.add(new Parameter("java.lang.String", typeNamePattern));
-        JDBCMethod method = new JDBCMethod("getSuperTypes", paramList);
+        JDBCMethod method = new JDBCMethod("getSuperTypes", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -4087,19 +4152,22 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getSuperTables(String catalog, String schemaPattern, String tableNamePattern) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schemaPattern));
         paramList.add(new Parameter("java.lang.String", tableNamePattern));
-        JDBCMethod method = new JDBCMethod("getSuperTables", paramList);
+        JDBCMethod method = new JDBCMethod("getSuperTables", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -4183,20 +4251,23 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getAttributes(String catalog, String schemaPattern, String typeNamePattern, String attributeNamePattern) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schemaPattern));
         paramList.add(new Parameter("java.lang.String", typeNamePattern));
         paramList.add(new Parameter("java.lang.String", attributeNamePattern));
-        JDBCMethod method = new JDBCMethod("getAttributes", paramList);
+        JDBCMethod method = new JDBCMethod("getAttributes", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -4436,18 +4507,21 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getSchemas(String catalog, String schemaPattern) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schemaPattern));
-        JDBCMethod method = new JDBCMethod("getSchemas", paramList);
+        JDBCMethod method = new JDBCMethod("getSchemas", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -4518,15 +4592,18 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getClientInfoProperties() throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
-        JDBCMethod method = new JDBCMethod("getClientInfoProperties", null);
+        JDBCMethod method = new JDBCMethod("getClientInfoProperties", null, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -4579,19 +4656,22 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getFunctions(String catalog, String schemaPattern, String functionNamePattern) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schemaPattern));
         paramList.add(new Parameter("java.lang.String", functionNamePattern));
-        JDBCMethod method = new JDBCMethod("getFunctions", paramList);
+        JDBCMethod method = new JDBCMethod("getFunctions", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -4690,20 +4770,23 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getFunctionColumns(String catalog, String schemaPattern, String functionNamePattern, String columnNamePattern) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schemaPattern));
         paramList.add(new Parameter("java.lang.String", functionNamePattern));
         paramList.add(new Parameter("java.lang.String", columnNamePattern));
-        JDBCMethod method = new JDBCMethod("getFunctionColumns", paramList);
+        JDBCMethod method = new JDBCMethod("getFunctionColumns", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**
@@ -4770,20 +4853,23 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      */
     @Override
     public ResultSet getPseudoColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, null, null);
+        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schemaPattern));
         paramList.add(new Parameter("java.lang.String", tableNamePattern));
         paramList.add(new Parameter("java.lang.String", columnNamePattern));
-        JDBCMethod method = new JDBCMethod("getPseudoColumns", paramList);
+        JDBCMethod method = new JDBCMethod("getPseudoColumns", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
             throw new SQLException(e.toString());
         }
 
-        return new PegaResultSet(conn, null, null);
+        ret.setMr(mr);
+        return ret;
     }
 
     /**

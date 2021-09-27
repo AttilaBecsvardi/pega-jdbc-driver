@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.Response;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Represents a statement.
@@ -34,8 +35,10 @@ import java.util.ArrayList;
  */
 public class PegaStatement implements Statement {
 
-    private static final String REMOTE_INSTANCE_NAME = "Statement";
-    private PegaConnection conn;
+    private static final String REMOTE_INSTANCE_TYPE = "Statement";
+    private final String GUID = "PEGA" + UUID.randomUUID().toString().replace("-", "");
+
+    protected PegaConnection conn;
     private RestClient client;
     private PegaResultSet resultSet;
 
@@ -44,15 +47,28 @@ public class PegaStatement implements Statement {
         this.client = conn.getClient();
     }
 
-    private MethodResponse callRemoteMethod(JDBCMethod method) throws Exception {
-        try (Response response = client.invokeJDBCMethod(REMOTE_INSTANCE_NAME, method)) {
+    public PegaStatement() {
+    }
+
+    protected String getRemoteInstanceType() {
+        return REMOTE_INSTANCE_TYPE;
+    }
+
+    protected String getGUID() {
+        return this.GUID;
+    }
+
+    protected MethodResponse callRemoteMethod(JDBCMethod method) throws Exception {
+
+        try (Response response = client.invokeJDBCMethod(getRemoteInstanceType(), getGUID(), method)) {
+            String s = response.readEntity(String.class);
+            ObjectMapper objectMapper = new ObjectMapper();
+            MethodResponse mr = objectMapper.readValue(s, MethodResponse.class);
 
             if (response.getStatus() != 200) {
-                throw new SQLException("Failed to call " + method.getMethodName());
+                throw new SQLException("Failed to call " + method.getMethodName() + ", exception: " + mr.getError());
             } else {
-                String s = response.readEntity(String.class);
-                ObjectMapper objectMapper = new ObjectMapper();
-                return objectMapper.readValue(s, MethodResponse.class);
+                return mr;
             }
         } catch (Exception e) {
             throw e;
@@ -81,17 +97,20 @@ public class PegaStatement implements Statement {
      *                             the currently running {@code Statement}
      */
     public ResultSet executeQuery(String sql) throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, this, null);
+        MethodResponse mr;
         // execute sql query on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", sql));
-        JDBCMethod method = new JDBCMethod("executeQuery", paramList);
+        JDBCMethod method = new JDBCMethod("executeQuery", paramList, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        resultSet = new PegaResultSet(conn, this, sql);
+        ret.setMr(mr);
+        resultSet = ret;
         return resultSet;
     }
 
@@ -126,7 +145,7 @@ public class PegaStatement implements Statement {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -153,7 +172,7 @@ public class PegaStatement implements Statement {
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -180,7 +199,7 @@ public class PegaStatement implements Statement {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -211,7 +230,7 @@ public class PegaStatement implements Statement {
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -235,7 +254,7 @@ public class PegaStatement implements Statement {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -260,7 +279,7 @@ public class PegaStatement implements Statement {
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -294,7 +313,7 @@ public class PegaStatement implements Statement {
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -317,7 +336,7 @@ public class PegaStatement implements Statement {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -355,7 +374,7 @@ public class PegaStatement implements Statement {
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -376,7 +395,7 @@ public class PegaStatement implements Statement {
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -401,7 +420,15 @@ public class PegaStatement implements Statement {
      *                      this method is called on a closed <code>Statement</code>
      */
     public SQLWarning getWarnings() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        // throw new SQLFeatureNotSupportedException();
+        // call method on the server side
+        JDBCMethod method = new JDBCMethod("getWarnings", null);
+        try {
+            MethodResponse mr = callRemoteMethod(method);
+            return new SQLWarning(mr.getReturnValue());
+        } catch (Exception e) {
+            throw new SQLException(e.getMessage());
+        }
     }
 
     /**
@@ -420,7 +447,7 @@ public class PegaStatement implements Statement {
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -455,7 +482,7 @@ public class PegaStatement implements Statement {
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -501,7 +528,7 @@ public class PegaStatement implements Statement {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
         //return resultSet;
@@ -518,15 +545,18 @@ public class PegaStatement implements Statement {
      * @see #execute
      */
     public ResultSet getResultSet() throws SQLException {
+        PegaResultSet ret = new PegaResultSet(conn, this, null);
+        MethodResponse mr;
         // call the method on the server side
-        JDBCMethod method = new JDBCMethod("getResultSet", null);
+        JDBCMethod method = new JDBCMethod("getResultSet", null, ret.getGUID());
         try {
-            callRemoteMethod(method);
+            mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        resultSet = new PegaResultSet(conn, this, null);
+        ret.setMr(mr);
+        resultSet = ret;
         return resultSet;
     }
 
@@ -548,7 +578,7 @@ public class PegaStatement implements Statement {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -578,7 +608,7 @@ public class PegaStatement implements Statement {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -604,7 +634,7 @@ public class PegaStatement implements Statement {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -636,7 +666,7 @@ public class PegaStatement implements Statement {
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -662,7 +692,7 @@ public class PegaStatement implements Statement {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -688,7 +718,7 @@ public class PegaStatement implements Statement {
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -709,7 +739,7 @@ public class PegaStatement implements Statement {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -731,7 +761,7 @@ public class PegaStatement implements Statement {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -761,7 +791,7 @@ public class PegaStatement implements Statement {
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -783,7 +813,7 @@ public class PegaStatement implements Statement {
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -904,7 +934,7 @@ public class PegaStatement implements Statement {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1215,7 +1245,7 @@ public class PegaStatement implements Statement {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1234,7 +1264,7 @@ public class PegaStatement implements Statement {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1260,7 +1290,7 @@ public class PegaStatement implements Statement {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1295,7 +1325,7 @@ public class PegaStatement implements Statement {
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1320,7 +1350,7 @@ public class PegaStatement implements Statement {
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1341,7 +1371,7 @@ public class PegaStatement implements Statement {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 

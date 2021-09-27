@@ -36,8 +36,10 @@ public class PegaDriver implements java.sql.Driver {
             if (!registered) {
                 registered = true;
                 DriverManager.registerDriver(INSTANCE);
+                Class.forName("io.github.attilabecsvardi.pega.jdbc.PegaDriver");
+
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             //DbException.traceThrowable(e);
         }
         return INSTANCE;
@@ -88,7 +90,7 @@ public class PegaDriver implements java.sql.Driver {
         if (url == null) {
             //throw DbException.getJdbcSQLException(ErrorCode.URL_FORMAT_ERROR_2, null, Constants.URL_FORMAT, null);
             throw new SQLException("URL_FORMAT_ERROR");
-        } else if (url.startsWith(Constants.START_URL)) {
+        } else if (acceptsURL(url)) {
             PegaConnection conn = new PegaConnection(url, info);
             conn.init();
             return conn;
