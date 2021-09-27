@@ -6,7 +6,7 @@
 
     <groupId>io.github.attilabecsvardi.pega</groupId>
     <artifactId>pega-jdbc-driver</artifactId>
-    <version>1.0-alpha1</version>
+    <version>0.1-alpha</version>
 
     <properties>
         <jersey.version>3.0.2</jersey.version>
