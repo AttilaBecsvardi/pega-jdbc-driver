@@ -14,13 +14,11 @@ This solution has two main components:
 
 <img src="docs/images/Architecture_diagram.png" height="80%" width="80%"/>
 
-![Architecture_diagram](docs/images/Architecture_diagram.png)
-
 ## Build
 
 Prerequisites:
 
-1. Java (JDK) 11 or later.
+1. Java (JDK) 8 or later.
 2. Apache Maven 3.6+
 3. Internet access
 4. Git client
@@ -47,7 +45,7 @@ from [GitHub releases](https://github.com/AttilaBecsvardi/pega-jdbc-driver/relea
 1. [Build](#Build) or [download](https://github.com/AttilaBecsvardi/pega-jdbc-driver/releases) `pega-jdbc-driver.jar`
 2. [Download](https://github.com/AttilaBecsvardi/pega-jdbc-driver/releases) MyPegaJDBC Pega application
 3. Download and install your favorite DB tool  
-   *Note: here I'll use [DBeaver Community](https://dbeaver.io/download/) for demonstration*
+   *Note: here I'll use [DBeaver Community](https://dbeaver.io/download/) for demonstration purposes*
 
 ### Installing MyPegaJDBC Pega application
 
@@ -97,9 +95,9 @@ Ok, you can now add the new driver configuration in DBeaver.
 
 1. Click **Database -> Driver Manager** and click on the **New** button
 2. Enter **Driver Name**, **Driver Type** and set **Class Name** to `io.github.attilabecsvardi.pega.jdbc.PegaDriver`
-   ![driver_main](docs/images/driver_main.png)
+   <img src="docs/images/driver_main.png" height="80%" width="80%"/>
 3. Switch to **Libraries** tab and click **Add File** to add `pega-jdbc-driver.jar` jar file  
-   ![driver_libraries](docs/images/driver_libraries.png)
+   <img src="docs/images/driver_libraries.png" height="80%" width="80%"/>
 4. Click **OK** and **Close** Driver Manager
 
 #### Adding a new database connection
@@ -109,18 +107,18 @@ Ok, you can now add the new driver configuration in DBeaver.
 3. Enter **Host** url (i.e `jdbc:pega:http://localhost:8080/prweb/PRRestService/JDBCAPI/v1/PegaJDBC/`) and **Port** (
    i.e `8080`)  
    Enter the previously created Pega Operator **Username** and **Password**  
-   ![connection_main](docs/images/connection_main.png)
+   <img src="docs/images/connection_main.png" height="80%" width="80%"/>
 4. Switch to **Driver properties** tab and add a new property  
    `Property Name = dbName`  
    `Property Value = <target_database> (i.e PegaRULES)`
    > ***Hint:** check **DB Info** landing page for the available DBs*
 
-   ![connection_driver_properties](docs/images/connection_driver_properties.png)
+   <img src="docs/images/connection_driver_properties.png" height="80%" width="80%"/>
 5. Click **Finish**
 6. Select the newly created DB connection in the **Database Navigator** and press **F4** to open Connection properties
    dialog!  
    Select **Initialization** and set **Keep-Alive**  
-   ![connection_init](docs/images/connection_init.png)
+   <img src="docs/images/connection_init.png" height="80%" width="80%"/>
 
    > ***Note:** Keep-Alive is required to prevent Pega Requestor passivation.  
    Pega uses passivation to improve system performance by removing pages from the clipboard that have not been accessed by a requestor for a specified period of time. Normally, this feature is useful and works well but in our case, we store different non-serializable Java objects on the clipboard and therefore the passivation fails. We don't want to completely disable this feature in Pega instead of using keep-alive messages.  
@@ -129,7 +127,7 @@ Ok, you can now add the new driver configuration in DBeaver.
 
 ## Done
 
-![Animation.gif](docs/images/Animation.gif)
+<img src="docs/images/Animation.gif" height="80%" width="80%"/>
 
 ## Uninstallation
 
