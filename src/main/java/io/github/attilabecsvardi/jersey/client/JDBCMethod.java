@@ -1,5 +1,6 @@
 package io.github.attilabecsvardi.jersey.client;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Produces;
 
@@ -11,6 +12,7 @@ import java.util.ArrayList;
  */
 @Consumes
 @Produces
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "class")
 public class JDBCMethod implements Serializable {
 
     private String methodName;

@@ -1,10 +1,7 @@
 package io.github.attilabecsvardi.pega.jdbc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.attilabecsvardi.jersey.client.JDBCMethod;
-import io.github.attilabecsvardi.jersey.client.MethodResponse;
-import io.github.attilabecsvardi.jersey.client.Parameter;
-import io.github.attilabecsvardi.jersey.client.RestClient;
+import io.github.attilabecsvardi.jersey.client.*;
 import jakarta.ws.rs.core.Response;
 
 import java.sql.*;
@@ -27,6 +24,8 @@ public class PegaConnection implements Connection {
     private final String GUID = "PEGA" + UUID.randomUUID().toString().replace("-", "");
 
     private RestClient client;
+    private RestClientCXF clientCFX;
+
     private String url;
     private Properties info;
     private String dbName;
@@ -35,7 +34,6 @@ public class PegaConnection implements Connection {
     public PegaConnection(String url, Properties info) throws SQLException {
         this.url = url.substring(Constants.START_URL.length());
         this.info = info;
-        this.client = new RestClient(this.url, this.info);
 
         if (info != null) {
             this.dbName = info.getProperty("dbName");
@@ -46,13 +44,19 @@ public class PegaConnection implements Connection {
     }
 
     public void init() throws SQLException {
+        this.client = new RestClient(this.url, this.info);
+        //this.clientCFX = new RestClientCXF(this.url, this.info);
+
+
         // create a Connection object on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", this.dbName));
         JDBCMethod method = new JDBCMethod("INIT", paramList, GUID);
         try (
                 //    callRemoteMethod(method);
-                Response response = client.invokeJDBCMethod(REMOTE_INSTANCE_TYPE, GUID, method)) {
+                Response response = client.invokeJDBCMethod(REMOTE_INSTANCE_TYPE, GUID, method)
+                //javax.ws.rs.core.Response response = clientCFX.invokeJDBCMethod(REMOTE_INSTANCE_TYPE, GUID, method)
+        ) {
 
             if (response.getStatus() != 200) {
                 if (response.getStatus() == 401) {
@@ -69,14 +73,14 @@ public class PegaConnection implements Connection {
 
     MethodResponse callRemoteMethod(JDBCMethod method) throws Exception {
         try (Response response = client.invokeJDBCMethod(REMOTE_INSTANCE_TYPE, GUID, method)) {
+            int status = response.getStatus();
+            MethodResponse mr = response.readEntity(MethodResponse.class);
 
-            if (response.getStatus() != 200) {
+            if (status != 200) {
                 throw new SQLException("Failed to call " + method.getMethodName() + " -> Find details in Pega server log");
-            } else {
-                String s = response.readEntity(String.class);
-                ObjectMapper objectMapper = new ObjectMapper();
-                return objectMapper.readValue(s, MethodResponse.class);
             }
+
+            return mr;
         } catch (Exception e) {
             throw e;
         }
@@ -366,6 +370,15 @@ public class PegaConnection implements Connection {
         } catch (Exception e) {
             throw new SQLException(e.getMessage());
         }
+
+        // also terminate the remote Pega Requestor
+        try (Response response = client.terminateRequestor()) {
+            if (response.getStatus() != 200) {
+                throw new SQLException("Failed to terminate requestor -> Find details in Pega server log");
+            }
+        } catch (Exception e) {
+            throw new SQLException(e);
+        }
     }
 
     /**
@@ -607,7 +620,11 @@ public class PegaConnection implements Connection {
         JDBCMethod method = new JDBCMethod("getWarnings", null);
         try {
             MethodResponse mr = callRemoteMethod(method);
-            return new SQLWarning(mr.getReturnValue());
+            if (mr != null) {
+                return new SQLWarning(mr.getReturnValue());
+            } else {
+                return null;
+            }
         } catch (Exception e) {
             throw new SQLException(e.getMessage());
         }
@@ -695,7 +712,8 @@ public class PegaConnection implements Connection {
      *                                         set type and result set concurrency.
      * @since 1.2
      */
-    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
+    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws
+            SQLException {
         throw new SQLFeatureNotSupportedException("PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)");
     }
 
@@ -729,7 +747,8 @@ public class PegaConnection implements Connection {
      *                                         set type and result set concurrency.
      * @since 1.2
      */
-    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
+    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws
+            SQLException {
         throw new SQLFeatureNotSupportedException("CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency)");
     }
 
@@ -970,7 +989,8 @@ public class PegaConnection implements Connection {
      * @see ResultSet
      * @since 1.4
      */
-    public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+    public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws
+            SQLException {
         PegaStatement ret = new PegaStatement(this);
 
         // create a Statement object on the server side
@@ -1027,7 +1047,8 @@ public class PegaConnection implements Connection {
      * @see ResultSet
      * @since 1.4
      */
-    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
+                                              int resultSetHoldability) throws SQLException {
         throw new SQLFeatureNotSupportedException("PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability)");
     }
 
@@ -1067,7 +1088,8 @@ public class PegaConnection implements Connection {
      * @see ResultSet
      * @since 1.4
      */
-    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency,
+                                         int resultSetHoldability) throws SQLException {
         throw new SQLFeatureNotSupportedException("CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability)");
     }
 

@@ -2,6 +2,7 @@ package io.github.attilabecsvardi.pega.jdbc;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -54,12 +55,12 @@ class PegaStatementTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("already tested")
     void executeQuery() {
     }
 
     @Test
-    @Disabled
+    @Disabled("already tested")
     void executeUpdate() {
     }
 
@@ -70,7 +71,7 @@ class PegaStatementTest {
                 "create table data.UNIT_TEST_EMP " +
                         "(ID integer NOT NULL PRIMARY KEY, " +
                         "NAME varchar(40) NOT NULL)";
-
+        stmt.executeUpdate("drop table if exists data.UNIT_TEST_EMP");
         int ret = stmt.executeUpdate(createString);
         assertEquals(0, ret);
     }
@@ -191,10 +192,10 @@ class PegaStatementTest {
     @Test
     @Order(8)
     void testExecute_DropTable() throws SQLException {
-        String truncateString =
+        String dropString =
                 "drop table data.UNIT_TEST_EMP";
 
-        int ret = stmt.executeUpdate(truncateString);
+        int ret = stmt.executeUpdate(dropString);
         assertEquals(0, ret);
 
         String query = "select ID, NAME, CITY " +
@@ -205,12 +206,12 @@ class PegaStatementTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("already tested")
     void close() {
     }
 
     @Test
-    @Disabled
+    @Disabled("already tested")
     void isClosed() {
     }
 
@@ -223,6 +224,111 @@ class PegaStatementTest {
         // method call on closed connection throws exception
         assertThrows(SQLException.class, () -> s.executeQuery("select 1"));
     }
+
+    @Test
+    public void testDoubleClose() throws SQLException {
+        Statement stmtTemp = conn.createStatement();
+        stmtTemp.close();
+        stmtTemp.close();
+    }
+
+    @Test
+    public void testMultiExecute() throws SQLException {
+        stmt.execute("DROP TABLE IF EXISTS test_statement");
+        stmt.execute("CREATE TABLE test_statement(i int)");
+        assertTrue(stmt.execute("SELECT 1 as a; UPDATE test_statement SET i=1; SELECT 2 as b, 3 as c"));
+
+        ResultSet rs = stmt.getResultSet();
+        assertTrue(rs.next());
+        assertEquals(1, rs.getInt(1));
+        rs.close();
+
+        assertTrue(!stmt.getMoreResults());
+        assertEquals(0, stmt.getUpdateCount());
+
+        assertTrue(stmt.getMoreResults());
+        rs = stmt.getResultSet();
+        assertTrue(rs.next());
+        assertEquals(2, rs.getInt(1));
+        rs.close();
+
+        assertTrue(!stmt.getMoreResults());
+        assertEquals(-1, stmt.getUpdateCount());
+
+        stmt.execute("DROP TABLE test_statement");
+    }
+
+    @Test
+    public void testEmptyQuery() throws SQLException {
+        stmt.execute("");
+        assertNull(stmt.getResultSet());
+        assertTrue(!stmt.getMoreResults());
+    }
+
+    @Test
+    @EnabledIf("isPostgresDB")
+    public void testNumericFunctions() throws SQLException {
+
+        ResultSet rs = stmt.executeQuery("select {fn abs(-2.3)} as abs ");
+        assertTrue(rs.next());
+        assertEquals(2.3f, rs.getFloat(1), 0.00001);
+
+        rs = stmt.executeQuery("select {fn acos(-0.6)} as acos ");
+        assertTrue(rs.next());
+        assertEquals(Math.acos(-0.6), rs.getDouble(1), 0.00001);
+
+        rs = stmt.executeQuery("select {fn asin(-0.6)} as asin ");
+        assertTrue(rs.next());
+        assertEquals(Math.asin(-0.6), rs.getDouble(1), 0.00001);
+
+        rs = stmt.executeQuery("select {fn atan(-0.6)} as atan ");
+        assertTrue(rs.next());
+        assertEquals(Math.atan(-0.6), rs.getDouble(1), 0.00001);
+
+        rs = stmt.executeQuery("select {fn atan2(-2.3,7)} as atan2 ");
+        assertTrue(rs.next());
+        assertEquals(Math.atan2(-2.3, 7), rs.getDouble(1), 0.00001);
+
+        rs = stmt.executeQuery("select {fn ceiling(-2.3)} as ceiling ");
+        assertTrue(rs.next());
+        assertEquals(-2, rs.getDouble(1), 0.00001);
+
+        rs = stmt.executeQuery("select {fn cos(-2.3)} as cos, {fn cot(-2.3)} as cot ");
+        assertTrue(rs.next());
+        assertEquals(Math.cos(-2.3), rs.getDouble(1), 0.00001);
+        assertEquals(1 / Math.tan(-2.3), rs.getDouble(2), 0.00001);
+
+        rs = stmt.executeQuery("select {fn degrees({fn pi()})} as degrees ");
+        assertTrue(rs.next());
+        assertEquals(180, rs.getDouble(1), 0.00001);
+
+        rs = stmt.executeQuery("select {fn exp(-2.3)}, {fn floor(-2.3)},"
+                + " {fn log(2.3)},{fn log10(2.3)},{fn mod(3,2)}");
+        assertTrue(rs.next());
+        assertEquals(Math.exp(-2.3), rs.getDouble(1), 0.00001);
+        assertEquals(-3, rs.getDouble(2), 0.00001);
+        assertEquals(Math.log(2.3), rs.getDouble(3), 0.00001);
+        assertEquals(Math.log(2.3) / Math.log(10), rs.getDouble(4), 0.00001);
+        assertEquals(1, rs.getDouble(5), 0.00001);
+
+        rs = stmt.executeQuery("select {fn pi()}, {fn power(7,-2.3)},"
+                + " {fn radians(-180)},{fn round(3.1294,2)}");
+        assertTrue(rs.next());
+        assertEquals(Math.PI, rs.getDouble(1), 0.00001);
+        assertEquals(Math.pow(7, -2.3), rs.getDouble(2), 0.00001);
+        assertEquals(-Math.PI, rs.getDouble(3), 0.00001);
+        assertEquals(3.13, rs.getDouble(4), 0.00001);
+
+        rs = stmt.executeQuery("select {fn sign(-2.3)}, {fn sin(-2.3)},"
+                + " {fn sqrt(2.3)},{fn tan(-2.3)},{fn truncate(3.1294,2)}");
+        assertTrue(rs.next());
+        assertEquals(-1, rs.getInt(1));
+        assertEquals(Math.sin(-2.3), rs.getDouble(2), 0.00001);
+        assertEquals(Math.sqrt(2.3), rs.getDouble(3), 0.00001);
+        assertEquals(Math.tan(-2.3), rs.getDouble(4), 0.00001);
+        assertEquals(3.12, rs.getDouble(5), 0.00001);
+    }
+
 
     @Test
     void getMaxFieldSize() {
@@ -383,5 +489,10 @@ class PegaStatementTest {
 
     @Test
     void isWrapperFor() {
+    }
+
+    // used for postgres specific tests
+    boolean isPostgresDB() {
+        return config.getProperty("dbType").equalsIgnoreCase("postgres");
     }
 }

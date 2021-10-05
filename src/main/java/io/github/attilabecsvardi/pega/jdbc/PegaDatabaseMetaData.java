@@ -1,6 +1,5 @@
 package io.github.attilabecsvardi.pega.jdbc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.attilabecsvardi.jersey.client.JDBCMethod;
 import io.github.attilabecsvardi.jersey.client.MethodResponse;
 import io.github.attilabecsvardi.jersey.client.Parameter;
@@ -53,14 +52,14 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
 
     private MethodResponse callRemoteMethod(JDBCMethod method) throws Exception {
         try (Response response = client.invokeJDBCMethod(REMOTE_INSTANCE_TYPE, GUID, method)) {
+            int status = response.getStatus();
+            MethodResponse mr = response.readEntity(MethodResponse.class);
 
-            if (response.getStatus() != 200) {
+            if (status != 200) {
                 throw new SQLException("Failed to call " + method.getMethodName());
-            } else {
-                String s = response.readEntity(String.class);
-                ObjectMapper objectMapper = new ObjectMapper();
-                return objectMapper.readValue(s, MethodResponse.class);
             }
+
+            return mr;
         } catch (Exception e) {
             throw e;
         }
@@ -81,7 +80,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -101,7 +100,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -120,7 +119,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -138,7 +137,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -156,7 +155,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -180,7 +179,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -204,7 +203,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -223,7 +222,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -242,7 +241,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -260,7 +259,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -278,7 +277,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -296,7 +295,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -314,7 +313,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -352,7 +351,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -371,7 +370,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -390,7 +389,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -409,7 +408,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -428,7 +427,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -447,7 +446,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -466,7 +465,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -485,7 +484,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -504,7 +503,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -523,7 +522,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -542,7 +541,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -562,7 +561,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -582,7 +581,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -602,7 +601,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -622,7 +621,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -641,7 +640,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -666,7 +665,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -685,7 +684,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -704,7 +703,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -723,7 +722,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -745,7 +744,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -765,7 +764,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -786,7 +785,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -815,7 +814,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -833,7 +832,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -852,7 +851,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -871,7 +870,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -891,7 +890,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -910,7 +909,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -930,7 +929,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -951,7 +950,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -970,7 +969,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -990,7 +989,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1009,7 +1008,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1027,7 +1026,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1045,7 +1044,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1063,7 +1062,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1081,7 +1080,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1100,7 +1099,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1118,7 +1117,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1136,7 +1135,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1155,7 +1154,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1173,7 +1172,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1191,7 +1190,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1211,7 +1210,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1229,7 +1228,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1247,7 +1246,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1265,7 +1264,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1285,7 +1284,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1304,7 +1303,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1322,7 +1321,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1340,7 +1339,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1358,7 +1357,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1376,7 +1375,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1394,7 +1393,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1412,7 +1411,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1430,7 +1429,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1448,7 +1447,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1466,7 +1465,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1484,7 +1483,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1503,7 +1502,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1522,7 +1521,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1541,7 +1540,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1560,7 +1559,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1579,7 +1578,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1598,7 +1597,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1617,7 +1616,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1636,7 +1635,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1654,7 +1653,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1672,7 +1671,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1690,7 +1689,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1710,7 +1709,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1730,7 +1729,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1750,7 +1749,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1770,7 +1769,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1791,7 +1790,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1812,7 +1811,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1833,7 +1832,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1854,7 +1853,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1874,7 +1873,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1895,7 +1894,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1916,7 +1915,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1936,7 +1935,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1957,7 +1956,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1978,7 +1977,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -2000,7 +1999,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -2021,7 +2020,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -2042,7 +2041,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -2063,7 +2062,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -2083,7 +2082,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -2103,7 +2102,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -2124,7 +2123,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -2145,7 +2144,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -2166,7 +2165,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -2187,7 +2186,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -2208,7 +2207,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -2228,7 +2227,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -2249,7 +2248,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -2272,7 +2271,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -2291,7 +2290,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -2310,7 +2309,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -2329,7 +2328,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -2348,7 +2347,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -2412,11 +2411,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -2526,11 +2529,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -2593,11 +2600,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -2624,11 +2635,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -2653,11 +2668,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -2684,11 +2703,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -2782,7 +2805,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @see #getSearchStringEscape
      */
     @Override
-    public ResultSet getColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) throws SQLException {
+    public ResultSet getColumns(String catalog, String schemaPattern, String tableNamePattern, String
+            columnNamePattern) throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         MethodResponse mr = null;
         // call method on the server side
@@ -2795,11 +2819,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -2839,7 +2867,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @see #getSearchStringEscape
      */
     @Override
-    public ResultSet getColumnPrivileges(String catalog, String schema, String table, String columnNamePattern) throws SQLException {
+    public ResultSet getColumnPrivileges(String catalog, String schema, String table, String
+            columnNamePattern) throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         MethodResponse mr = null;
         // call method on the server side
@@ -2852,11 +2881,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -2900,7 +2933,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @see #getSearchStringEscape
      */
     @Override
-    public ResultSet getTablePrivileges(String catalog, String schemaPattern, String tableNamePattern) throws SQLException {
+    public ResultSet getTablePrivileges(String catalog, String schemaPattern, String
+            tableNamePattern) throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         MethodResponse mr = null;
         // call method on the server side
@@ -2912,11 +2946,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -2971,7 +3009,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @throws SQLException if a database access error occurs
      */
     @Override
-    public ResultSet getBestRowIdentifier(String catalog, String schema, String table, int scope, boolean nullable) throws SQLException {
+    public ResultSet getBestRowIdentifier(String catalog, String schema, String table,
+                                          int scope, boolean nullable) throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         MethodResponse mr = null;
         // call method on the server side
@@ -2985,11 +3024,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -3038,7 +3081,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @throws SQLException if a database access error occurs
      */
     @Override
-    public ResultSet getVersionColumns(String catalog, String schema, String table) throws SQLException {
+    public ResultSet getVersionColumns(String catalog, String schema, String table) throws
+            SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         MethodResponse mr = null;
         // call method on the server side
@@ -3050,11 +3094,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -3087,7 +3135,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @throws SQLException if a database access error occurs
      */
     @Override
-    public ResultSet getPrimaryKeys(String catalog, String schema, String table) throws SQLException {
+    public ResultSet getPrimaryKeys(String catalog, String schema, String table) throws
+            SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         MethodResponse mr = null;
         // call method on the server side
@@ -3099,11 +3148,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -3182,7 +3235,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @see #getExportedKeys
      */
     @Override
-    public ResultSet getImportedKeys(String catalog, String schema, String table) throws SQLException {
+    public ResultSet getImportedKeys(String catalog, String schema, String table) throws
+            SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         MethodResponse mr = null;
         // call method on the server side
@@ -3194,11 +3248,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -3278,7 +3336,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @see #getImportedKeys
      */
     @Override
-    public ResultSet getExportedKeys(String catalog, String schema, String table) throws SQLException {
+    public ResultSet getExportedKeys(String catalog, String schema, String
+            table) throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         MethodResponse mr = null;
         // call method on the server side
@@ -3290,11 +3349,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -3381,7 +3444,9 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @see #getImportedKeys
      */
     @Override
-    public ResultSet getCrossReference(String parentCatalog, String parentSchema, String parentTable, String foreignCatalog, String foreignSchema, String foreignTable) throws SQLException {
+    public ResultSet getCrossReference(String parentCatalog, String
+            parentSchema, String parentTable, String foreignCatalog, String
+                                               foreignSchema, String foreignTable) throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         MethodResponse mr = null;
         // call method on the server side
@@ -3396,11 +3461,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -3477,11 +3546,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -3543,7 +3616,9 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @throws SQLException if a database access error occurs
      */
     @Override
-    public ResultSet getIndexInfo(String catalog, String schema, String table, boolean unique, boolean approximate) throws SQLException {
+    public ResultSet getIndexInfo(String catalog, String
+            schema, String table, boolean unique, boolean approximate) throws
+            SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         MethodResponse mr = null;
         // call method on the server side
@@ -3557,11 +3632,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -3574,7 +3653,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.2
      */
     @Override
-    public boolean supportsResultSetType(int type) throws SQLException {
+    public boolean supportsResultSetType(int type) throws
+            SQLException {
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
@@ -3583,7 +3663,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -3599,7 +3679,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.2
      */
     @Override
-    public boolean supportsResultSetConcurrency(int type, int concurrency) throws SQLException {
+    public boolean supportsResultSetConcurrency(int type,
+                                                int concurrency) throws SQLException {
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
@@ -3609,7 +3690,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -3627,7 +3708,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.2
      */
     @Override
-    public boolean ownUpdatesAreVisible(int type) throws SQLException {
+    public boolean ownUpdatesAreVisible(int type) throws
+            SQLException {
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
@@ -3636,7 +3718,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -3653,7 +3735,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.2
      */
     @Override
-    public boolean ownDeletesAreVisible(int type) throws SQLException {
+    public boolean ownDeletesAreVisible(int type) throws
+            SQLException {
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
@@ -3662,7 +3745,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -3679,7 +3762,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.2
      */
     @Override
-    public boolean ownInsertsAreVisible(int type) throws SQLException {
+    public boolean ownInsertsAreVisible(int type) throws
+            SQLException {
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
@@ -3688,7 +3772,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -3706,7 +3790,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.2
      */
     @Override
-    public boolean othersUpdatesAreVisible(int type) throws SQLException {
+    public boolean othersUpdatesAreVisible(int type) throws
+            SQLException {
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
@@ -3715,7 +3800,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -3733,7 +3818,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.2
      */
     @Override
-    public boolean othersDeletesAreVisible(int type) throws SQLException {
+    public boolean othersDeletesAreVisible(int type) throws
+            SQLException {
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
@@ -3742,7 +3828,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -3760,7 +3846,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.2
      */
     @Override
-    public boolean othersInsertsAreVisible(int type) throws SQLException {
+    public boolean othersInsertsAreVisible(int type) throws
+            SQLException {
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
@@ -3769,7 +3856,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -3787,7 +3874,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.2
      */
     @Override
-    public boolean updatesAreDetected(int type) throws SQLException {
+    public boolean updatesAreDetected(int type) throws
+            SQLException {
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
@@ -3796,7 +3884,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -3816,7 +3904,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.2
      */
     @Override
-    public boolean deletesAreDetected(int type) throws SQLException {
+    public boolean deletesAreDetected(int type) throws
+            SQLException {
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
@@ -3825,7 +3914,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -3843,7 +3932,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.2
      */
     @Override
-    public boolean insertsAreDetected(int type) throws SQLException {
+    public boolean insertsAreDetected(int type) throws
+            SQLException {
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
@@ -3852,7 +3942,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -3872,7 +3962,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -3926,7 +4016,9 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.2
      */
     @Override
-    public ResultSet getUDTs(String catalog, String schemaPattern, String typeNamePattern, int[] types) throws SQLException {
+    public ResultSet getUDTs(String catalog, String
+            schemaPattern, String typeNamePattern, int[] types) throws
+            SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         MethodResponse mr = null;
         // call method on the server side
@@ -3939,11 +4031,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -3961,7 +4057,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
         return conn;
@@ -3983,7 +4079,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -3997,14 +4093,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.4
      */
     @Override
-    public boolean supportsNamedParameters() throws SQLException {
+    public boolean supportsNamedParameters() throws
+            SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsNamedParameters", null);
         try {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -4020,14 +4117,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.4
      */
     @Override
-    public boolean supportsMultipleOpenResults() throws SQLException {
+    public boolean supportsMultipleOpenResults() throws
+            SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsMultipleOpenResults", null);
         try {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -4044,14 +4142,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.4
      */
     @Override
-    public boolean supportsGetGeneratedKeys() throws SQLException {
+    public boolean supportsGetGeneratedKeys() throws
+            SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsGetGeneratedKeys", null);
         try {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -4097,7 +4196,9 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.4
      */
     @Override
-    public ResultSet getSuperTypes(String catalog, String schemaPattern, String typeNamePattern) throws SQLException {
+    public ResultSet getSuperTypes(String catalog, String
+            schemaPattern, String typeNamePattern) throws
+            SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         MethodResponse mr = null;
         // call method on the server side
@@ -4109,11 +4210,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -4151,7 +4256,9 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.4
      */
     @Override
-    public ResultSet getSuperTables(String catalog, String schemaPattern, String tableNamePattern) throws SQLException {
+    public ResultSet getSuperTables(String
+                                            catalog, String schemaPattern, String
+                                            tableNamePattern) throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         MethodResponse mr = null;
         // call method on the server side
@@ -4163,11 +4270,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -4250,7 +4361,10 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.4
      */
     @Override
-    public ResultSet getAttributes(String catalog, String schemaPattern, String typeNamePattern, String attributeNamePattern) throws SQLException {
+    public ResultSet getAttributes(String
+                                           catalog, String schemaPattern, String
+                                           typeNamePattern, String attributeNamePattern) throws
+            SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         MethodResponse mr = null;
         // call method on the server side
@@ -4263,11 +4377,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -4282,7 +4400,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.4
      */
     @Override
-    public boolean supportsResultSetHoldability(int holdability) throws SQLException {
+    public boolean supportsResultSetHoldability
+    (int holdability) throws SQLException {
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(holdability)));
@@ -4291,7 +4410,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -4306,14 +4425,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.4
      */
     @Override
-    public int getResultSetHoldability() throws SQLException {
+    public int getResultSetHoldability() throws
+            SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getResultSetHoldability", null);
         try {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -4325,14 +4445,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.4
      */
     @Override
-    public int getDatabaseMajorVersion() throws SQLException {
+    public int getDatabaseMajorVersion() throws
+            SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getDatabaseMajorVersion", null);
         try {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -4344,14 +4465,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.4
      */
     @Override
-    public int getDatabaseMinorVersion() throws SQLException {
+    public int getDatabaseMinorVersion() throws
+            SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getDatabaseMinorVersion", null);
         try {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -4364,14 +4486,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.4
      */
     @Override
-    public int getJDBCMajorVersion() throws SQLException {
+    public int getJDBCMajorVersion() throws
+            SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getJDBCMajorVersion", null);
         try {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -4384,14 +4507,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.4
      */
     @Override
-    public int getJDBCMinorVersion() throws SQLException {
+    public int getJDBCMinorVersion() throws
+            SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getJDBCMinorVersion", null);
         try {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -4406,14 +4530,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.4
      */
     @Override
-    public int getSQLStateType() throws SQLException {
+    public int getSQLStateType() throws
+            SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getSQLStateType", null);
         try {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -4427,14 +4552,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.4
      */
     @Override
-    public boolean locatorsUpdateCopy() throws SQLException {
+    public boolean locatorsUpdateCopy() throws
+            SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("locatorsUpdateCopy", null);
         try {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -4446,14 +4572,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.4
      */
     @Override
-    public boolean supportsStatementPooling() throws SQLException {
+    public boolean supportsStatementPooling() throws
+            SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsStatementPooling", null);
         try {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -4478,7 +4605,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.6
      */
     @Override
-    public RowIdLifetime getRowIdLifetime() throws SQLException {
+    public RowIdLifetime getRowIdLifetime() throws
+            SQLException {
         throw new SQLFeatureNotSupportedException("RowIdLifetime getRowIdLifetime()");
     }
 
@@ -4506,7 +4634,9 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.6
      */
     @Override
-    public ResultSet getSchemas(String catalog, String schemaPattern) throws SQLException {
+    public ResultSet getSchemas(String
+                                        catalog, String schemaPattern) throws
+            SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         MethodResponse mr = null;
         // call method on the server side
@@ -4517,11 +4647,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -4533,14 +4667,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.6
      */
     @Override
-    public boolean supportsStoredFunctionsUsingCallSyntax() throws SQLException {
+    public boolean supportsStoredFunctionsUsingCallSyntax
+    () throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsStoredFunctionsUsingCallSyntax", null);
         try {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -4556,14 +4691,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.6
      */
     @Override
-    public boolean autoCommitFailureClosesAllResultSets() throws SQLException {
+    public boolean autoCommitFailureClosesAllResultSets
+    () throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("autoCommitFailureClosesAllResultSets", null);
         try {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -4591,7 +4727,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.6
      */
     @Override
-    public ResultSet getClientInfoProperties() throws SQLException {
+    public ResultSet getClientInfoProperties
+    () throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         MethodResponse mr = null;
         // call method on the server side
@@ -4599,11 +4736,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -4655,7 +4796,11 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.6
      */
     @Override
-    public ResultSet getFunctions(String catalog, String schemaPattern, String functionNamePattern) throws SQLException {
+    public ResultSet getFunctions
+    (String catalog, String
+            schemaPattern, String
+             functionNamePattern) throws
+            SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         MethodResponse mr = null;
         // call method on the server side
@@ -4667,11 +4812,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -4769,7 +4918,12 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.6
      */
     @Override
-    public ResultSet getFunctionColumns(String catalog, String schemaPattern, String functionNamePattern, String columnNamePattern) throws SQLException {
+    public ResultSet getFunctionColumns
+    (String catalog, String
+            schemaPattern, String
+             functionNamePattern, String
+             columnNamePattern) throws
+            SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         MethodResponse mr = null;
         // call method on the server side
@@ -4782,11 +4936,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -4852,7 +5010,12 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.7
      */
     @Override
-    public ResultSet getPseudoColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) throws SQLException {
+    public ResultSet getPseudoColumns
+    (String catalog, String
+            schemaPattern, String
+             tableNamePattern, String
+             columnNamePattern) throws
+            SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         MethodResponse mr = null;
         // call method on the server side
@@ -4865,11 +5028,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -4884,14 +5051,15 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.7
      */
     @Override
-    public boolean generatedKeyAlwaysReturned() throws SQLException {
+    public boolean generatedKeyAlwaysReturned
+    () throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("generatedKeyAlwaysReturned", null);
         try {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -4913,7 +5081,9 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.6
      */
     @Override
-    public <T> T unwrap(Class<T> iface) throws SQLException {
+    public <T> T
+    unwrap(Class<T> iface) throws
+            SQLException {
         throw new SQLFeatureNotSupportedException("<T> T unwrap(Class<T> iface)");
     }
 
@@ -4933,7 +5103,9 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
      * @since 1.6
      */
     @Override
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+    public boolean isWrapperFor
+    (Class<?> iface) throws
+            SQLException {
         throw new SQLFeatureNotSupportedException("boolean isWrapperFor(Class<?> iface)");
     }
 }

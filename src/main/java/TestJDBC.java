@@ -4,10 +4,7 @@ import io.github.attilabecsvardi.pega.jdbc.PegaDriver;
 import java.io.IOException;
 import java.io.StringReader;
 import java.sql.*;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 public class TestJDBC {
 
@@ -75,18 +72,20 @@ public class TestJDBC {
         Driver d = new PegaDriver();
         DriverManager.registerDriver(d);
 
-        String url = "jdbc:pega:http://localhost:8080/prweb/PRRestService/JDBCAPI/v1/PegaJDBC/";
-//        String url = "jdbc:pega:https://pega-marketing-dev.bkt.com.al/prweb/PRRestService/JDBCAPI/v1/PegaJDBC/";
+        //String url = "jdbc:pega:http://localhost:8080/prweb/PRRestService/JDBCAPI/v1/PegaJDBC/";
+        String url = "jdbc:pega:https://pega-marketing-dev.bkt.com.al/prweb/PRRestService/JDBCAPI/v1/PegaJDBC/";
 
         Properties myInfo = new Properties();
-        myInfo.setProperty("user", "test");
-        myInfo.setProperty("password", "rules");
+        //myInfo.setProperty("user", "test");
+        //myInfo.setProperty("password", "rules");
+        myInfo.setProperty("user", "dbattila.becsvardi@stc");
+        myInfo.setProperty("password", "PegaRULES22_");
         myInfo.setProperty("dbName", "PegaRULES");
+
 
         try (Connection conn = DriverManager.getConnection(url, myInfo)) {
 
             SQLWarning w = conn.getWarnings();
-
 
             CallableStatement cStmt = conn.prepareCall("{ ? = call upper( ? ) }");
             cStmt.registerOutParameter(1, Types.VARCHAR);

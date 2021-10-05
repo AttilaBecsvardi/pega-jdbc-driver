@@ -9,15 +9,32 @@
     <version>0.1-alpha</version>
 
     <properties>
-        <jersey.version>3.0.2</jersey.version>
+        <jersey.version>3.0.3</jersey.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit-jupiter.version>5.8.0</junit-jupiter.version>
+        <jackson.version>2.12.5</jackson.version>
+        <junit-jupiter.version>5.8.1</junit-jupiter.version>
         <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     </properties>
 
 
     <dependencies>
+        <!--dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-client</artifactId>
+            <version>3.4.4</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+            <version>${jackson.version}</version>
+        </dependency-->
+
 
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
@@ -45,7 +62,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.12.4</version>
+            <version>${jackson.version}</version>
         </dependency>
 
 

@@ -61,15 +61,14 @@ public class PegaStatement implements Statement {
     protected MethodResponse callRemoteMethod(JDBCMethod method) throws Exception {
 
         try (Response response = client.invokeJDBCMethod(getRemoteInstanceType(), getGUID(), method)) {
-            String s = response.readEntity(String.class);
-            ObjectMapper objectMapper = new ObjectMapper();
-            MethodResponse mr = objectMapper.readValue(s, MethodResponse.class);
+            int status = response.getStatus();
+            MethodResponse mr = response.readEntity(MethodResponse.class);
 
-            if (response.getStatus() != 200) {
+            if (status != 200) {
                 throw new SQLException("Failed to call " + method.getMethodName() + ", exception: " + mr.getError());
-            } else {
-                return mr;
             }
+
+            return mr;
         } catch (Exception e) {
             throw e;
         }
@@ -108,10 +107,13 @@ public class PegaStatement implements Statement {
         } catch (Exception e) {
             throw new SQLException(e.getMessage());
         }
-
-        ret.setMr(mr);
-        resultSet = ret;
-        return resultSet;
+        if (mr != null) {
+            ret.setMr(mr);
+            resultSet = ret;
+            return resultSet;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -425,7 +427,11 @@ public class PegaStatement implements Statement {
         JDBCMethod method = new JDBCMethod("getWarnings", null);
         try {
             MethodResponse mr = callRemoteMethod(method);
-            return new SQLWarning(mr.getReturnValue());
+            if (mr != null) {
+                return new SQLWarning(mr.getReturnValue());
+            } else {
+                return null;
+            }
         } catch (Exception e) {
             throw new SQLException(e.getMessage());
         }
@@ -555,9 +561,14 @@ public class PegaStatement implements Statement {
             throw new SQLException(e.getMessage());
         }
 
-        ret.setMr(mr);
-        resultSet = ret;
-        return resultSet;
+        // e.g empty query results a null resultset object
+        if (mr != null) {
+            ret.setMr(mr);
+            resultSet = ret;
+            return resultSet;
+        } else {
+            return null;
+        }
     }
 
     /**

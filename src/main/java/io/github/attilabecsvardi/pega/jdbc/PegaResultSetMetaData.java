@@ -3,7 +3,6 @@ package io.github.attilabecsvardi.pega.jdbc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.attilabecsvardi.jersey.client.JDBCMethod;
 import io.github.attilabecsvardi.jersey.client.MethodResponse;
-import io.github.attilabecsvardi.jersey.client.Parameter;
 import io.github.attilabecsvardi.jersey.client.RestClient;
 import jakarta.ws.rs.core.Response;
 
@@ -11,9 +10,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Types;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.ListIterator;
 import java.util.UUID;
 
 public class PegaResultSetMetaData implements ResultSetMetaData {
@@ -41,14 +37,14 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
 
     private MethodResponse callRemoteMethod(JDBCMethod method) throws Exception {
         try (Response response = client.invokeJDBCMethod(REMOTE_INSTANCE_TYPE, GUID, method)) {
+            int status = response.getStatus();
+            MethodResponse mr = response.readEntity(MethodResponse.class);
 
-            if (response.getStatus() != 200) {
-                throw new SQLException("Failed to call " + method.getMethodName());
-            } else {
-                String s = response.readEntity(String.class);
-                ObjectMapper objectMapper = new ObjectMapper();
-                return objectMapper.readValue(s, MethodResponse.class);
+            if (status != 200) {
+                throw new SQLException("Failed to call " + method.getMethodName() + ", exception: " + mr.getError());
             }
+
+            return mr;
         } catch (Exception e) {
             throw e;
         }
@@ -69,7 +65,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().size();
     }
@@ -92,7 +88,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).isAutoIncrement();
     }
@@ -115,7 +111,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).isCaseSensitive();
     }
@@ -138,7 +134,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).isSearchable();
     }
@@ -161,7 +157,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).isCurrency();
     }
@@ -185,7 +181,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).isNullable();
     }
@@ -208,7 +204,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).isSigned();
     }
@@ -232,7 +228,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).getColumnDisplaySize();
     }
@@ -259,7 +255,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).getColumnLabel();
     }
@@ -282,7 +278,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).getColumnName();
     }
@@ -305,7 +301,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).getSchemaName();
     }
@@ -333,7 +329,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).getPrecision();
     }
@@ -357,7 +353,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).getScale();
     }
@@ -380,7 +376,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).getTableName();
     }
@@ -404,7 +400,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).getCatalogName();
     }
@@ -428,7 +424,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).getColumnType();
     }
@@ -452,7 +448,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).getColumnTypeName();
     }
@@ -475,7 +471,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).isReadOnly();
     }
@@ -498,7 +494,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).isWritable();
     }
@@ -521,7 +517,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).isDefinitelyWritable();
     }
@@ -552,7 +548,7 @@ public class PegaResultSetMetaData implements ResultSetMetaData {
             MethodResponse mr = callRemoteMethod(method);
             return mr.getReturnValue();
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }*/
         return mr.getColumnList().get(column - 1).getColumnClassName();
     }

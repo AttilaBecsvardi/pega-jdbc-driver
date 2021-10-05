@@ -1,11 +1,8 @@
 package io.github.attilabecsvardi.pega.jdbc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.attilabecsvardi.jersey.client.JDBCMethod;
 import io.github.attilabecsvardi.jersey.client.MethodResponse;
 import io.github.attilabecsvardi.jersey.client.Parameter;
-import io.github.attilabecsvardi.jersey.client.RestClient;
-import jakarta.ws.rs.core.Response;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -18,8 +15,8 @@ import java.util.UUID;
 
 public class PegaPreparedStatement extends PegaStatement implements PreparedStatement {
     private static final String REMOTE_INSTANCE_TYPE = "PreparedStatement";
-    protected final String sql;
     private final String GUID = "PEGA" + UUID.randomUUID().toString().replace("-", "");
+    protected String sql;
     protected PegaResultSet resultSet;
 
 
@@ -35,21 +32,6 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
     protected String getGUID() {
         return this.GUID;
     }
-
-    /*protected MethodResponse callRemoteMethod(JDBCMethod method) throws Exception {
-        try (Response response = client.invokeJDBCMethod(REMOTE_INSTANCE_NAME, method)) {
-
-            if (response.getStatus() != 200) {
-                throw new SQLException("Failed to call " + method.getMethodName());
-            } else {
-                String s = response.readEntity(String.class);
-                ObjectMapper objectMapper = new ObjectMapper();
-                return objectMapper.readValue(s, MethodResponse.class);
-            }
-        } catch (Exception e) {
-            throw e;
-        }
-    }*/
 
     /**
      * Executes the SQL query in this <code>PreparedStatement</code> object
@@ -74,12 +56,15 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
-
-        ret.setMr(mr);
-        resultSet = ret;
-        return resultSet;
+        if (mr != null) {
+            ret.setMr(mr);
+            resultSet = ret;
+            return resultSet;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -106,7 +91,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -138,7 +123,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -164,7 +149,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -189,7 +174,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -214,7 +199,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -239,7 +224,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -264,7 +249,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -289,7 +274,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -314,7 +299,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -339,7 +324,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -367,7 +352,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -411,7 +396,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -436,7 +421,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -462,7 +447,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -566,7 +551,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -672,7 +657,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -692,7 +677,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -831,11 +816,14 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
-
-        ret.setMr(mr);
-        return ret;
+        if (mr != null) {
+            ret.setMr(mr);
+            return ret;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -957,7 +945,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1536,12 +1524,15 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
-
-        ret.setMr(mr);
-        resultSet = ret;
-        return resultSet;
+        if (mr != null) {
+            ret.setMr(mr);
+            resultSet = ret;
+            return resultSet;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -1576,7 +1567,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1604,7 +1595,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1632,7 +1623,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1664,7 +1655,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1689,7 +1680,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1715,7 +1706,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1750,7 +1741,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1774,7 +1765,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
             MethodResponse mr = callRemoteMethod(method);
             return Integer.parseInt(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1813,7 +1804,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1835,7 +1826,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1866,9 +1857,13 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         JDBCMethod method = new JDBCMethod("getWarnings", null);
         try {
             MethodResponse mr = callRemoteMethod(method);
-            return new SQLWarning(mr.getReturnValue());
+            if (mr != null) {
+                return new SQLWarning(mr.getReturnValue());
+            } else {
+                return null;
+            }
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1889,7 +1884,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1925,7 +1920,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1972,7 +1967,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
             MethodResponse mr = callRemoteMethod(method);
             return Boolean.parseBoolean(mr.getReturnValue());
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -1995,11 +1990,14 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.toString());
+            throw new SQLException(e.getMessage());
         }
-
-        ret.setMr(mr);
-        resultSet = ret;
-        return resultSet;
+        if (mr != null) {
+            ret.setMr(mr);
+            resultSet = ret;
+            return resultSet;
+        } else {
+            return null;
+        }
     }
 }

@@ -31,29 +31,28 @@ public class PegaDriver implements java.sql.Driver {
         load();
     }
 
-    public static synchronized PegaDriver load() {
+    public static synchronized PegaDriver load() throws RuntimeException {
         try {
             if (!registered) {
                 registered = true;
                 DriverManager.registerDriver(INSTANCE);
                 Class.forName("io.github.attilabecsvardi.pega.jdbc.PegaDriver");
-
             }
         } catch (Exception e) {
-            //DbException.traceThrowable(e);
+            throw new RuntimeException(e);
         }
         return INSTANCE;
     }
 
-    public static synchronized void unload() {
-        try {
-            if (registered) {
-                registered = false;
-                DriverManager.deregisterDriver(INSTANCE);
-            }
-        } catch (SQLException e) {
-            //DbException.traceThrowable(e);
+    public static synchronized void unload() throws SQLException {
+        if (registered) {
+            registered = false;
+            DriverManager.deregisterDriver(INSTANCE);
         }
+    }
+
+    public static boolean isRegistered() {
+        return registered;
     }
 
     /**

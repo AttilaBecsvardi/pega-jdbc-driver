@@ -68,21 +68,32 @@ class PegaConnectionTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("don't know a generic test case")
     void nativeSQL() {
     }
 
     @Test
-    @Disabled
+    @Disabled("already tested")
     void getAutoCommit() {
     }
 
     @Test
-    @Disabled
+    @Disabled("already tested")
     void setAutoCommit() {
     }
 
     @Test
+    @Disabled("already tested")
+    void commit() {
+        fail("TOBE implemented");
+    }
+
+    @Test
+    @Disabled("already tested")
+    void rollback() {
+        fail("TOBE implemented");
+    }
+
     void testAutoCommitGetterSetter() throws SQLException {
         boolean orig = conn.getAutoCommit();
         conn.setAutoCommit(!orig);
@@ -95,31 +106,63 @@ class PegaConnectionTest {
     }
 
     @Test
-    void commit() {
-        fail("TOBE implemented");
+    public void testTransactions() throws Exception {
+        Statement stmt;
+        ResultSet rs;
+
+        testAutoCommitGetterSetter();
+
+        // Now test commit
+        int ret;
+        stmt = conn.createStatement();
+        stmt.executeUpdate("drop table if exists test_a");
+
+        stmt.executeUpdate("create table test_a(imagename name, image oid, id int4)");
+        ret = stmt.executeUpdate("insert into test_a (imagename,image,id) values ('comttest',1234,5678)");
+        assertEquals(1, ret);
+        conn.setAutoCommit(false);
+
+        // Now update image to 9876 and commit
+        stmt.executeUpdate("update test_a set image=9876 where id=5678");
+        conn.commit();
+        rs = stmt.executeQuery("select image from test_a where id=5678");
+        assertTrue(rs.next());
+        assertEquals(9876, rs.getInt(1));
+        rs.close();
+
+        // Now try to change it but rollback
+        stmt.executeUpdate("update test_a set image=1111 where id=5678");
+        conn.rollback();
+        rs = stmt.executeQuery("select image from test_a where id=5678");
+        assertTrue(rs.next());
+        assertEquals(9876, rs.getInt(1)); // Should not change!
+        rs.close();
+
+        stmt.execute("drop table test_a");
+        stmt.close();
     }
 
-    @Test
-    void rollback() {
-        fail("TOBE implemented");
-    }
 
     @Test
-    @Disabled
+    @Disabled("already tested")
     void close() {
     }
 
     @Test
-    @Disabled
+    @Disabled("already tested")
     void isClosed() {
     }
 
     @Test
     void testClose() throws SQLException {
-        Connection c = getConnection();
+        Connection c = DriverManager.getConnection(url, config);
         assertFalse(c.isClosed());
         c.close();
-        assertTrue(c.isClosed());
+        // in our case close() will also terminate the session on Pega server-side
+        // is there any better solution?!
+        // assertTrue(c.isClosed());
+        assertThrows(SQLException.class, c::isClosed);
+
         // method call on closed connection throws exception
         assertThrows(SQLException.class, c::getAutoCommit);
     }
@@ -298,10 +341,5 @@ class PegaConnectionTest {
 
     @Test
     void isWrapperFor() {
-    }
-
-    // helper method to get a connection
-    Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url, config);
     }
 }
