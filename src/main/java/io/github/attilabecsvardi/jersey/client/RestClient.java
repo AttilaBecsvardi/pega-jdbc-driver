@@ -58,7 +58,7 @@ public class RestClient {
         DEFAULT_MAPPER.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
         DEFAULT_MAPPER.enable(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature());
         DEFAULT_MAPPER.enable(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER.mappedFeature());
-
+        DEFAULT_MAPPER.enable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION);
         //config.register(new JacksonJsonProvider(DEFAULT_MAPPER));
         JacksonJaxbJsonProvider provider = new JacksonJaxbJsonProvider();
         provider.setMapper(DEFAULT_MAPPER);

@@ -72,14 +72,14 @@ public class TestJDBC {
         Driver d = new PegaDriver();
         DriverManager.registerDriver(d);
 
-        //String url = "jdbc:pega:http://localhost:8080/prweb/PRRestService/JDBCAPI/v1/PegaJDBC/";
-        String url = "jdbc:pega:https://pega-marketing-dev.bkt.com.al/prweb/PRRestService/JDBCAPI/v1/PegaJDBC/";
+        String url = "jdbc:pega:http://localhost:8080/prweb/PRRestService/JDBCAPI/v1/PegaJDBC/";
+        //String url = "jdbc:pega:https://pega-marketing-dev.bkt.com.al/prweb/PRRestService/JDBCAPI/v1/PegaJDBC/";
 
         Properties myInfo = new Properties();
-        //myInfo.setProperty("user", "test");
-        //myInfo.setProperty("password", "rules");
-        myInfo.setProperty("user", "dbattila.becsvardi@stc");
-        myInfo.setProperty("password", "PegaRULES22_");
+        myInfo.setProperty("user", "test");
+        myInfo.setProperty("password", "rules");
+        //myInfo.setProperty("user", "dbattila.becsvardi@stc");
+        //myInfo.setProperty("password", "PegaRULES22_");
         myInfo.setProperty("dbName", "PegaRULES");
 
 
@@ -103,7 +103,7 @@ public class TestJDBC {
             //sqlp = " SELECT c.relname,a.*,pg_catalog.pg_get_expr(ad.adbin, ad.adrelid, true) as def_value,dsc.description FROM pg_catalog.pg_attribute a INNER JOIN pg_catalog.pg_class c ON (a.attrelid=c.oid) LEFT OUTER JOIN pg_catalog.pg_attrdef ad ON (a.attrelid=ad.adrelid AND a.attnum = ad.adnum) LEFT OUTER JOIN pg_catalog.pg_description dsc ON (c.oid=dsc.objoid AND a.attnum = dsc.objsubid) WHERE NOT a.attisdropped AND c.oid=? ORDER BY a.attnum \n";
 
             //sqlp="EXPLAIN (FORMAT XML) SELECT sa.* FROM pg_catalog.pg_stat_activity sa";
-            PreparedStatement preparedStatement = conn.prepareStatement(sqlp);
+          /*  PreparedStatement preparedStatement = conn.prepareStatement(sqlp);
             preparedStatement = conn.prepareStatement(sqlp);
 
             //preparedStatement.setLong(1, 495249);
@@ -121,15 +121,14 @@ public class TestJDBC {
                     System.out.println("CName: " + rspMetaData.getColumnName(i) + ", CValue: " + rsp.getInt(i));
                 }
 
-            preparedStatement.close();
+            preparedStatement.close();*/
 
             String sql = "select pyLabel,pyGUID from pr_myco_myapp_data_test";
             Statement stmt = conn.createStatement();
             //stmt.setMaxRows(200);
 
 
-            String query = "select ID, NAME, CITY " +
-                    "from UNIT_TEST_EMP ";
+            String query = "select 'a' as b, 'b' as b";
             ResultSet myrs4 = stmt.executeQuery(query);
 
             while (myrs4.next()) {

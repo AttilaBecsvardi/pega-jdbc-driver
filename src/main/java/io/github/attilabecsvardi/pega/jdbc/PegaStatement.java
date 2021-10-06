@@ -105,7 +105,7 @@ public class PegaStatement implements Statement {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.getMessage());
+            throw new SQLException(e.getMessage() + " Cause: " + e.getCause().getMessage());
         }
         if (mr != null) {
             ret.setMr(mr);
@@ -558,7 +558,7 @@ public class PegaStatement implements Statement {
         try {
             mr = callRemoteMethod(method);
         } catch (Exception e) {
-            throw new SQLException(e.getMessage());
+            throw new SQLException(e.getMessage() + " Cause: " + e.getCause().getMessage());
         }
 
         // e.g empty query results a null resultset object
