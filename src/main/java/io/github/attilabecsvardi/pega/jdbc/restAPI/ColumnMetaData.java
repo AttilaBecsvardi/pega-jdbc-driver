@@ -1,4 +1,4 @@
-package io.github.attilabecsvardi.jersey.client;
+package io.github.attilabecsvardi.pega.jdbc.restAPI;
 
 public class ColumnMetaData {
     private boolean autoIncrement;

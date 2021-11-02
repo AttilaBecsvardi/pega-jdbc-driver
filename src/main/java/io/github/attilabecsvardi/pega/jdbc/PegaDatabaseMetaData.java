@@ -1,14 +1,16 @@
 package io.github.attilabecsvardi.pega.jdbc;
 
-import io.github.attilabecsvardi.jersey.client.JDBCMethod;
-import io.github.attilabecsvardi.jersey.client.MethodResponse;
-import io.github.attilabecsvardi.jersey.client.Parameter;
-import io.github.attilabecsvardi.jersey.client.RestClient;
-import jakarta.ws.rs.core.Response;
+import io.github.attilabecsvardi.pega.jdbc.restAPI.JDBCMethod;
+import io.github.attilabecsvardi.pega.jdbc.restAPI.MethodResponse;
+import io.github.attilabecsvardi.pega.jdbc.restAPI.Parameter;
+import io.github.attilabecsvardi.pega.jdbc.restAPI.RestClient;
+//import jakarta.ws.rs.core.Response;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.UUID;
+
+import static io.github.attilabecsvardi.pega.jdbc.Utils.callRemoteMethod;
 
 public class PegaDatabaseMetaData implements DatabaseMetaData {
 
@@ -50,21 +52,6 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         //return String.join(";", arr);
     }
 
-    private MethodResponse callRemoteMethod(JDBCMethod method) throws Exception {
-        try (Response response = client.invokeJDBCMethod(REMOTE_INSTANCE_TYPE, GUID, method)) {
-            int status = response.getStatus();
-            MethodResponse mr = response.readEntity(MethodResponse.class);
-
-            if (status != 200) {
-                throw new SQLException("Failed to call " + method.getMethodName());
-            }
-
-            return mr;
-        } catch (Exception e) {
-            throw e;
-        }
-    }
-
     /**
      * Retrieves whether the current user can call all the procedures
      * returned by the method <code>getProcedures</code>.
@@ -76,12 +63,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean allProceduresAreCallable() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("allProceduresAreCallable", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -96,12 +79,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean allTablesAreSelectable() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("allTablesAreSelectable", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -115,12 +94,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public String getURL() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getURL", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return mr.getReturnValue();
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return mr.getReturnValue();
     }
 
     /**
@@ -133,12 +108,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public String getUserName() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getUserName", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return mr.getReturnValue();
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return mr.getReturnValue();
     }
 
     /**
@@ -151,12 +122,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean isReadOnly() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("isReadOnly", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -175,12 +142,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean nullsAreSortedHigh() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("nullsAreSortedHigh", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -199,12 +162,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean nullsAreSortedLow() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("nullsAreSortedLow", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -218,12 +177,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean nullsAreSortedAtStart() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("nullsAreSortedAtStart", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -237,12 +192,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean nullsAreSortedAtEnd() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("nullsAreSortedAtEnd", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -255,12 +206,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public String getDatabaseProductName() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getDatabaseProductName", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return mr.getReturnValue();
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return mr.getReturnValue();
     }
 
     /**
@@ -273,12 +220,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public String getDatabaseProductVersion() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getDatabaseProductVersion", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return mr.getReturnValue();
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return mr.getReturnValue();
     }
 
     /**
@@ -291,12 +234,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public String getDriverName() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getDriverName", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return mr.getReturnValue();
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return mr.getReturnValue();
     }
 
     /**
@@ -309,12 +248,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public String getDriverVersion() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getDriverVersion", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return mr.getReturnValue();
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return mr.getReturnValue();
     }
 
     /**
@@ -347,12 +282,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean usesLocalFiles() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("usesLocalFiles", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -366,12 +297,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean usesLocalFilePerTable() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("usesLocalFilePerTable", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -385,12 +312,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsMixedCaseIdentifiers() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsMixedCaseIdentifiers", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -404,12 +327,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean storesUpperCaseIdentifiers() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("storesUpperCaseIdentifiers", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -423,12 +342,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean storesLowerCaseIdentifiers() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("storesLowerCaseIdentifiers", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -442,12 +357,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean storesMixedCaseIdentifiers() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("storesMixedCaseIdentifiers", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -461,12 +372,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsMixedCaseQuotedIdentifiers() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsMixedCaseQuotedIdentifiers", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -480,12 +387,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean storesUpperCaseQuotedIdentifiers() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("storesUpperCaseQuotedIdentifiers", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -499,12 +402,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean storesLowerCaseQuotedIdentifiers() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("storesLowerCaseQuotedIdentifiers", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -518,12 +417,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean storesMixedCaseQuotedIdentifiers() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("storesMixedCaseQuotedIdentifiers", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -537,12 +432,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public String getIdentifierQuoteString() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getIdentifierQuoteString", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return mr.getReturnValue();
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return mr.getReturnValue();
     }
 
     /**
@@ -557,12 +448,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public String getSQLKeywords() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getSQLKeywords", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return mr.getReturnValue();
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return mr.getReturnValue();
     }
 
     /**
@@ -577,12 +464,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public String getNumericFunctions() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getNumericFunctions", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return mr.getReturnValue();
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return mr.getReturnValue();
     }
 
     /**
@@ -597,12 +480,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public String getStringFunctions() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getStringFunctions", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return mr.getReturnValue();
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return mr.getReturnValue();
     }
 
     /**
@@ -617,12 +496,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public String getSystemFunctions() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getSystemFunctions", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return mr.getReturnValue();
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return mr.getReturnValue();
     }
 
     /**
@@ -636,12 +511,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public String getTimeDateFunctions() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getTimeDateFunctions", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return mr.getReturnValue();
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return mr.getReturnValue();
     }
 
     /**
@@ -661,12 +532,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public String getSearchStringEscape() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getSearchStringEscape", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return mr.getReturnValue();
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return mr.getReturnValue();
     }
 
     /**
@@ -680,12 +547,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public String getExtraNameCharacters() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getExtraNameCharacters", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return mr.getReturnValue();
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return mr.getReturnValue();
     }
 
     /**
@@ -699,12 +562,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsAlterTableWithAddColumn() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsAlterTableWithAddColumn", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -718,12 +577,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsAlterTableWithDropColumn() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsAlterTableWithDropColumn", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -740,12 +595,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsColumnAliasing() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsColumnAliasing", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -760,12 +611,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean nullPlusNonNullIsNull() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("nullPlusNonNullIsNull", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -781,12 +628,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsConvert() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsConvert", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -810,12 +653,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         paramList.add(new Parameter("int", String.valueOf(fromType)));
         paramList.add(new Parameter("int", String.valueOf(toType)));
         JDBCMethod method = new JDBCMethod("supportsConvert", paramList);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -828,12 +667,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsTableCorrelationNames() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsTableCorrelationNames", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -847,12 +682,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsDifferentTableCorrelationNames() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsDifferentTableCorrelationNames", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -866,12 +697,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsExpressionsInOrderBy() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsExpressionsInOrderBy", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -886,12 +713,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsOrderByUnrelated() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsOrderByUnrelated", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -905,12 +728,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsGroupBy() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsGroupBy", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -925,12 +744,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsGroupByUnrelated() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsGroupByUnrelated", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -946,12 +761,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsGroupByBeyondSelect() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsGroupByBeyondSelect", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -965,12 +776,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsLikeEscapeClause() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsLikeEscapeClause", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -985,12 +792,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsMultipleResultSets() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsMultipleResultSets", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1004,12 +807,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsMultipleTransactions() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsMultipleTransactions", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1022,12 +821,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsNonNullableColumns() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsNonNullableColumns", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1040,12 +835,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsMinimumSQLGrammar() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsMinimumSQLGrammar", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1058,12 +849,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsCoreSQLGrammar() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsCoreSQLGrammar", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1076,12 +863,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsExtendedSQLGrammar() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsExtendedSQLGrammar", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1095,12 +878,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsANSI92EntryLevelSQL() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsANSI92EntryLevelSQL", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1113,12 +892,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsANSI92IntermediateSQL() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsANSI92IntermediateSQL", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1131,12 +906,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsANSI92FullSQL() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsANSI92FullSQL", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1150,12 +921,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsIntegrityEnhancementFacility() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsIntegrityEnhancementFacility", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1168,12 +935,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsOuterJoins() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsOuterJoins", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1186,12 +949,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsFullOuterJoins() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsFullOuterJoins", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1206,12 +965,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsLimitedOuterJoins() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsLimitedOuterJoins", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1224,12 +979,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public String getSchemaTerm() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getSchemaTerm", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return mr.getReturnValue();
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return mr.getReturnValue();
     }
 
     /**
@@ -1242,12 +993,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public String getProcedureTerm() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getProcedureTerm", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return mr.getReturnValue();
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return mr.getReturnValue();
     }
 
     /**
@@ -1260,12 +1007,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public String getCatalogTerm() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getCatalogTerm", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return mr.getReturnValue();
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return mr.getReturnValue();
     }
 
     /**
@@ -1280,12 +1023,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean isCatalogAtStart() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("isCatalogAtStart", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1299,12 +1038,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public String getCatalogSeparator() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getCatalogSeparator", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return mr.getReturnValue();
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return mr.getReturnValue();
     }
 
     /**
@@ -1317,12 +1052,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsSchemasInDataManipulation() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsSchemasInDataManipulation", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1335,12 +1066,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsSchemasInProcedureCalls() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsSchemasInProcedureCalls", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1353,12 +1080,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsSchemasInTableDefinitions() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsSchemasInTableDefinitions", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1371,12 +1094,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsSchemasInIndexDefinitions() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsSchemasInIndexDefinitions", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1389,12 +1108,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsSchemasInPrivilegeDefinitions() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsSchemasInPrivilegeDefinitions", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1407,12 +1122,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsCatalogsInDataManipulation() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsCatalogsInDataManipulation", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1425,12 +1136,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsCatalogsInProcedureCalls() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsCatalogsInProcedureCalls", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1443,12 +1150,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsCatalogsInTableDefinitions() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsCatalogsInTableDefinitions", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1461,12 +1164,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsCatalogsInIndexDefinitions() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsCatalogsInIndexDefinitions", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1479,12 +1178,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsCatalogsInPrivilegeDefinitions() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsCatalogsInPrivilegeDefinitions", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1498,12 +1193,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsPositionedDelete() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsPositionedDelete", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1517,12 +1208,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsPositionedUpdate() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsPositionedUpdate", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1536,12 +1223,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsSelectForUpdate() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsSelectForUpdate", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1555,12 +1238,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsStoredProcedures() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsStoredProcedures", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1574,12 +1253,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsSubqueriesInComparisons() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsSubqueriesInComparisons", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1593,12 +1268,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsSubqueriesInExists() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsSubqueriesInExists", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1612,12 +1283,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsSubqueriesInIns() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsSubqueriesInIns", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1631,12 +1298,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsSubqueriesInQuantifieds() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsSubqueriesInQuantifieds", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1649,12 +1312,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsCorrelatedSubqueries() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsCorrelatedSubqueries", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1667,12 +1326,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsUnion() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsUnion", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1685,12 +1340,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsUnionAll() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsUnionAll", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1705,12 +1356,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsOpenCursorsAcrossCommit() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsOpenCursorsAcrossCommit", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1725,12 +1372,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsOpenCursorsAcrossRollback() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsOpenCursorsAcrossRollback", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1745,12 +1388,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsOpenStatementsAcrossCommit() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsOpenStatementsAcrossCommit", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1765,12 +1404,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsOpenStatementsAcrossRollback() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsOpenStatementsAcrossRollback", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1786,12 +1421,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxBinaryLiteralLength() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxBinaryLiteralLength", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -1807,12 +1438,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxCharLiteralLength() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxCharLiteralLength", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -1828,12 +1455,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxColumnNameLength() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxColumnNameLength", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -1849,12 +1472,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxColumnsInGroupBy() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxColumnsInGroupBy", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -1869,12 +1488,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxColumnsInIndex() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxColumnsInIndex", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -1890,12 +1505,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxColumnsInOrderBy() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxColumnsInOrderBy", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -1911,12 +1522,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxColumnsInSelect() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxColumnsInSelect", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -1931,12 +1538,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxColumnsInTable() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxColumnsInTable", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -1952,12 +1555,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxConnections() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxConnections", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -1973,12 +1572,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxCursorNameLength() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxCursorNameLength", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -1995,12 +1590,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxIndexLength() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxIndexLength", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -2016,12 +1607,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxSchemaNameLength() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxSchemaNameLength", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -2037,12 +1624,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxProcedureNameLength() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxProcedureNameLength", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -2058,12 +1641,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxCatalogNameLength() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxCatalogNameLength", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -2078,12 +1657,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxRowSize() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxRowSize", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -2098,12 +1673,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean doesMaxRowSizeIncludeBlobs() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("doesMaxRowSizeIncludeBlobs", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -2119,12 +1690,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxStatementLength() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxStatementLength", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -2140,12 +1707,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxStatements() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxStatements", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -2161,12 +1724,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxTableNameLength() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxTableNameLength", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -2182,12 +1741,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxTablesInSelect() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxTablesInSelect", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -2203,12 +1758,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getMaxUserNameLength() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxUserNameLength", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -2223,12 +1774,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public int getDefaultTransactionIsolation() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getDefaultTransactionIsolation", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -2244,12 +1791,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsTransactions() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsTransactions", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -2267,12 +1810,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(level)));
         JDBCMethod method = new JDBCMethod("supportsTransactionIsolationLevel", paramList);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -2286,12 +1825,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsDataDefinitionAndDataManipulationTransactions() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsDataDefinitionAndDataManipulationTransactions", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -2305,12 +1840,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsDataManipulationTransactionsOnly() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsDataManipulationTransactionsOnly", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -2324,12 +1855,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean dataDefinitionCausesTransactionCommit() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("dataDefinitionCausesTransactionCommit", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -2343,12 +1870,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean dataDefinitionIgnoredInTransactions() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("dataDefinitionIgnoredInTransactions", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -2400,7 +1923,6 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     @Override
     public ResultSet getProcedures(String catalog, String schemaPattern, String procedureNamePattern) throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
 
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
@@ -2408,11 +1930,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         paramList.add(new Parameter("java.lang.String", schemaPattern));
         paramList.add(new Parameter("java.lang.String", procedureNamePattern));
         JDBCMethod method = new JDBCMethod("getProcedures", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -2518,7 +2037,6 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     @Override
     public ResultSet getProcedureColumns(String catalog, String schemaPattern, String procedureNamePattern, String columnNamePattern) throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
@@ -2526,11 +2044,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         paramList.add(new Parameter("java.lang.String", procedureNamePattern));
         paramList.add(new Parameter("java.lang.String", columnNamePattern));
         JDBCMethod method = new JDBCMethod("getProcedureColumns", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -2589,7 +2103,6 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     @Override
     public ResultSet getTables(String catalog, String schemaPattern, String tableNamePattern, String[] types) throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
@@ -2597,11 +2110,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         paramList.add(new Parameter("java.lang.String", tableNamePattern));
         paramList.add(new Parameter("[Ljava.lang.String;", toCSV(types)));
         JDBCMethod method = new JDBCMethod("getTables", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -2629,14 +2138,9 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     @Override
     public ResultSet getSchemas() throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getSchemas", null, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -2662,14 +2166,9 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     @Override
     public ResultSet getCatalogs() throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getCatalogs", null, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -2697,14 +2196,9 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     @Override
     public ResultSet getTableTypes() throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getTableTypes", null, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -2808,7 +2302,6 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public ResultSet getColumns(String catalog, String schemaPattern, String tableNamePattern, String
             columnNamePattern) throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
@@ -2816,11 +2309,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         paramList.add(new Parameter("java.lang.String", tableNamePattern));
         paramList.add(new Parameter("java.lang.String", columnNamePattern));
         JDBCMethod method = new JDBCMethod("getColumns", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -2870,7 +2359,6 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public ResultSet getColumnPrivileges(String catalog, String schema, String table, String
             columnNamePattern) throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
@@ -2878,11 +2366,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         paramList.add(new Parameter("java.lang.String", table));
         paramList.add(new Parameter("java.lang.String", columnNamePattern));
         JDBCMethod method = new JDBCMethod("getColumnPrivileges", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -2936,18 +2420,13 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public ResultSet getTablePrivileges(String catalog, String schemaPattern, String
             tableNamePattern) throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schemaPattern));
         paramList.add(new Parameter("java.lang.String", tableNamePattern));
         JDBCMethod method = new JDBCMethod("getTablePrivileges", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -3012,7 +2491,6 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public ResultSet getBestRowIdentifier(String catalog, String schema, String table,
                                           int scope, boolean nullable) throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
@@ -3021,11 +2499,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         paramList.add(new Parameter("int", String.valueOf(scope)));
         paramList.add(new Parameter("boolean", String.valueOf(nullable)));
         JDBCMethod method = new JDBCMethod("getBestRowIdentifier", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -3084,18 +2558,13 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public ResultSet getVersionColumns(String catalog, String schema, String table) throws
             SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schema));
         paramList.add(new Parameter("java.lang.String", table));
         JDBCMethod method = new JDBCMethod("getVersionColumns", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -3138,18 +2607,13 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public ResultSet getPrimaryKeys(String catalog, String schema, String table) throws
             SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schema));
         paramList.add(new Parameter("java.lang.String", table));
         JDBCMethod method = new JDBCMethod("getPrimaryKeys", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -3238,18 +2702,13 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public ResultSet getImportedKeys(String catalog, String schema, String table) throws
             SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schema));
         paramList.add(new Parameter("java.lang.String", table));
         JDBCMethod method = new JDBCMethod("getImportedKeys", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -3339,18 +2798,13 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public ResultSet getExportedKeys(String catalog, String schema, String
             table) throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schema));
         paramList.add(new Parameter("java.lang.String", table));
         JDBCMethod method = new JDBCMethod("getExportedKeys", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -3448,7 +2902,6 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             parentSchema, String parentTable, String foreignCatalog, String
                                                foreignSchema, String foreignTable) throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", parentCatalog));
@@ -3458,11 +2911,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         paramList.add(new Parameter("java.lang.String", foreignSchema));
         paramList.add(new Parameter("java.lang.String", foreignTable));
         JDBCMethod method = new JDBCMethod("getCrossReference", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -3540,14 +2989,9 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public ResultSet getTypeInfo() throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
         //throw new SQLFeatureNotSupportedException("ResultSet getTypeInfo()");
-        MethodResponse mr = null;
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getTypeInfo", null, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -3620,7 +3064,6 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             schema, String table, boolean unique, boolean approximate) throws
             SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
@@ -3629,11 +3072,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         paramList.add(new Parameter("boolean", String.valueOf(unique)));
         paramList.add(new Parameter("boolean", String.valueOf(approximate)));
         JDBCMethod method = new JDBCMethod("getIndexInfo", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -3659,12 +3098,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
         JDBCMethod method = new JDBCMethod("supportsResultSetType", paramList);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -3686,12 +3121,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         paramList.add(new Parameter("int", String.valueOf(type)));
         paramList.add(new Parameter("int", String.valueOf(concurrency)));
         JDBCMethod method = new JDBCMethod("supportsResultSetConcurrency", paramList);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -3714,12 +3145,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
         JDBCMethod method = new JDBCMethod("ownUpdatesAreVisible", paramList);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -3741,12 +3168,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
         JDBCMethod method = new JDBCMethod("ownDeletesAreVisible", paramList);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -3768,12 +3191,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
         JDBCMethod method = new JDBCMethod("ownInsertsAreVisible", paramList);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -3796,12 +3215,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
         JDBCMethod method = new JDBCMethod("othersUpdatesAreVisible", paramList);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -3824,12 +3239,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
         JDBCMethod method = new JDBCMethod("othersDeletesAreVisible", paramList);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -3852,12 +3263,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
         JDBCMethod method = new JDBCMethod("othersInsertsAreVisible", paramList);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -3880,12 +3287,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
         JDBCMethod method = new JDBCMethod("updatesAreDetected", paramList);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -3910,12 +3313,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
         JDBCMethod method = new JDBCMethod("deletesAreDetected", paramList);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -3938,12 +3337,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(type)));
         JDBCMethod method = new JDBCMethod("insertsAreDetected", paramList);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -3958,12 +3353,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsBatchUpdates() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsBatchUpdates", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -4020,7 +3411,6 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             schemaPattern, String typeNamePattern, int[] types) throws
             SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
@@ -4028,11 +3418,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         paramList.add(new Parameter("java.lang.String", typeNamePattern));
         paramList.add(new Parameter("[I]", toCSV(types)));
         JDBCMethod method = new JDBCMethod("getUDTs", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -4054,11 +3440,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public Connection getConnection() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getConnection", null);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         return conn;
     }
@@ -4075,12 +3457,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public boolean supportsSavepoints() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsSavepoints", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -4097,12 +3475,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsNamedParameters", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -4121,12 +3495,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsMultipleOpenResults", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -4146,12 +3516,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsGetGeneratedKeys", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -4200,18 +3566,13 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             schemaPattern, String typeNamePattern) throws
             SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schemaPattern));
         paramList.add(new Parameter("java.lang.String", typeNamePattern));
         JDBCMethod method = new JDBCMethod("getSuperTypes", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -4260,18 +3621,13 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
                                             catalog, String schemaPattern, String
                                             tableNamePattern) throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schemaPattern));
         paramList.add(new Parameter("java.lang.String", tableNamePattern));
         JDBCMethod method = new JDBCMethod("getSuperTables", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -4366,7 +3722,6 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
                                            typeNamePattern, String attributeNamePattern) throws
             SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
@@ -4374,11 +3729,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         paramList.add(new Parameter("java.lang.String", typeNamePattern));
         paramList.add(new Parameter("java.lang.String", attributeNamePattern));
         JDBCMethod method = new JDBCMethod("getAttributes", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -4406,12 +3757,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(holdability)));
         JDBCMethod method = new JDBCMethod("supportsResultSetHoldability", paramList);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -4429,12 +3776,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getResultSetHoldability", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -4449,12 +3792,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getDatabaseMajorVersion", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -4469,12 +3808,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getDatabaseMinorVersion", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -4490,12 +3825,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getJDBCMajorVersion", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -4511,12 +3842,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getJDBCMinorVersion", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -4534,12 +3861,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getSQLStateType", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -4556,12 +3879,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("locatorsUpdateCopy", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -4576,12 +3895,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
             SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsStatementPooling", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -4638,17 +3953,12 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
                                         catalog, String schemaPattern) throws
             SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schemaPattern));
         JDBCMethod method = new JDBCMethod("getSchemas", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -4671,12 +3981,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     () throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("supportsStoredFunctionsUsingCallSyntax", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -4695,12 +4001,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     () throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("autoCommitFailureClosesAllResultSets", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -4730,14 +4032,9 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     public ResultSet getClientInfoProperties
     () throws SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getClientInfoProperties", null, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -4802,18 +4099,13 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
              functionNamePattern) throws
             SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
         paramList.add(new Parameter("java.lang.String", schemaPattern));
         paramList.add(new Parameter("java.lang.String", functionNamePattern));
         JDBCMethod method = new JDBCMethod("getFunctions", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -4925,7 +4217,6 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
              columnNamePattern) throws
             SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
@@ -4933,11 +4224,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         paramList.add(new Parameter("java.lang.String", functionNamePattern));
         paramList.add(new Parameter("java.lang.String", columnNamePattern));
         JDBCMethod method = new JDBCMethod("getFunctionColumns", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -5017,7 +4304,6 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
              columnNamePattern) throws
             SQLException {
         PegaResultSet ret = new PegaResultSet(conn, null, null);
-        MethodResponse mr = null;
         // call method on the server side
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", catalog));
@@ -5025,11 +4311,7 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
         paramList.add(new Parameter("java.lang.String", tableNamePattern));
         paramList.add(new Parameter("java.lang.String", columnNamePattern));
         JDBCMethod method = new JDBCMethod("getPseudoColumns", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
 
         if (mr != null) {
             ret.setMr(mr);
@@ -5055,12 +4337,8 @@ public class PegaDatabaseMetaData implements DatabaseMetaData {
     () throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("generatedKeyAlwaysReturned", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, REMOTE_INSTANCE_TYPE, GUID, method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**

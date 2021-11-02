@@ -1,8 +1,7 @@
-package io.github.attilabecsvardi.jersey.client;
+package io.github.attilabecsvardi.pega.jdbc.restAPI;
 
 import java.sql.SQLWarning;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author attilabecsvardi
@@ -11,7 +10,7 @@ public class MethodResponse {
 
     private String returnValue = null;
     private SQLWarning sqlWarning = null;
-    private String error = null;
+    private JDBCError error = null;
     private ArrayList<ColumnMetaData> columnList = null;
     private ArrayList recordList = null;
 
@@ -34,11 +33,11 @@ public class MethodResponse {
         this.sqlWarning = sqlWarning;
     }
 
-    public String getError() {
+    public JDBCError getError() {
         return error;
     }
 
-    public void setError(String error) {
+    public void setError(JDBCError error) {
         this.error = error;
     }
 

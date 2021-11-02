@@ -1,8 +1,8 @@
 package io.github.attilabecsvardi.pega.jdbc;
 
-import io.github.attilabecsvardi.jersey.client.JDBCMethod;
-import io.github.attilabecsvardi.jersey.client.MethodResponse;
-import io.github.attilabecsvardi.jersey.client.Parameter;
+import io.github.attilabecsvardi.pega.jdbc.restAPI.JDBCMethod;
+import io.github.attilabecsvardi.pega.jdbc.restAPI.MethodResponse;
+import io.github.attilabecsvardi.pega.jdbc.restAPI.Parameter;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -12,6 +12,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.UUID;
+
+import static io.github.attilabecsvardi.pega.jdbc.Utils.callRemoteMethod;
 
 public class PegaPreparedStatement extends PegaStatement implements PreparedStatement {
     private static final String REMOTE_INSTANCE_TYPE = "PreparedStatement";
@@ -53,11 +55,9 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         MethodResponse mr;
         // call method on the server side
         JDBCMethod method = new JDBCMethod("executeQuery", null, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+
+        mr = callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
+
         if (mr != null) {
             ret.setMr(mr);
             resultSet = ret;
@@ -87,12 +87,8 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
     public int executeUpdate() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("executeUpdate", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -120,11 +116,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         paramList.add(new Parameter("int", String.valueOf(parameterIndex)));
         paramList.add(new Parameter("int", String.valueOf(sqlType)));
         JDBCMethod method = new JDBCMethod("setNull", paramList);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -146,11 +138,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         paramList.add(new Parameter("int", String.valueOf(parameterIndex)));
         paramList.add(new Parameter("boolean", String.valueOf(x)));
         JDBCMethod method = new JDBCMethod("setBoolean", paramList);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -171,11 +159,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         paramList.add(new Parameter("int", String.valueOf(parameterIndex)));
         paramList.add(new Parameter("byte", String.valueOf(x)));
         JDBCMethod method = new JDBCMethod("setByte", paramList);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -196,11 +180,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         paramList.add(new Parameter("int", String.valueOf(parameterIndex)));
         paramList.add(new Parameter("short", String.valueOf(x)));
         JDBCMethod method = new JDBCMethod("setShort", paramList);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -221,11 +201,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         paramList.add(new Parameter("int", String.valueOf(parameterIndex)));
         paramList.add(new Parameter("int", String.valueOf(x)));
         JDBCMethod method = new JDBCMethod("setInt", paramList);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -246,11 +222,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         paramList.add(new Parameter("int", String.valueOf(parameterIndex)));
         paramList.add(new Parameter("long", String.valueOf(x)));
         JDBCMethod method = new JDBCMethod("setLong", paramList);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -271,11 +243,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         paramList.add(new Parameter("int", String.valueOf(parameterIndex)));
         paramList.add(new Parameter("float", String.valueOf(x)));
         JDBCMethod method = new JDBCMethod("setFloat", paramList);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -296,11 +264,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         paramList.add(new Parameter("int", String.valueOf(parameterIndex)));
         paramList.add(new Parameter("double", String.valueOf(x)));
         JDBCMethod method = new JDBCMethod("setDouble", paramList);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -321,11 +285,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         paramList.add(new Parameter("int", String.valueOf(parameterIndex)));
         paramList.add(new Parameter("java.math.BigDecimal", String.valueOf(x)));
         JDBCMethod method = new JDBCMethod("setBigDecimal", paramList);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -349,11 +309,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         paramList.add(new Parameter("int", String.valueOf(parameterIndex)));
         paramList.add(new Parameter("java.lang.String", x));
         JDBCMethod method = new JDBCMethod("setString", paramList);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -393,11 +349,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         paramList.add(new Parameter("int", String.valueOf(parameterIndex)));
         paramList.add(new Parameter("java.sql.Date", String.valueOf(x)));
         JDBCMethod method = new JDBCMethod("setDate", paramList);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -418,11 +370,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         paramList.add(new Parameter("int", String.valueOf(parameterIndex)));
         paramList.add(new Parameter("java.sql.Time", String.valueOf(x)));
         JDBCMethod method = new JDBCMethod("setTime", paramList);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -444,11 +392,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         paramList.add(new Parameter("int", String.valueOf(parameterIndex)));
         paramList.add(new Parameter("java.sql.Timestamp", String.valueOf(x)));
         JDBCMethod method = new JDBCMethod("setTimestamp", paramList);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -548,11 +492,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
     public void clearParameters() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("setTimestamp", null);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -653,12 +593,8 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
     public boolean execute() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("execute", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -674,11 +610,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
     public void addBatch() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("addBatch", null);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -813,11 +745,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         MethodResponse mr;
         // create a ResultSetMetaData object on the server side
         JDBCMethod method = new JDBCMethod("getMetaData", null, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        mr = callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
         if (mr != null) {
             ret.setMr(mr);
             return ret;
@@ -942,11 +870,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         paramList.add(new Parameter("int", String.valueOf(sqlType)));
         paramList.add(new Parameter("java.lang.String", typeName));
         JDBCMethod method = new JDBCMethod("setNull", paramList);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -1521,11 +1445,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", sql));
         JDBCMethod method = new JDBCMethod("executeQuery", paramList, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        mr = callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
         if (mr != null) {
             ret.setMr(mr);
             resultSet = ret;
@@ -1563,12 +1483,8 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", sql));
         JDBCMethod method = new JDBCMethod("executeUpdate", paramList);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -1592,11 +1508,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
     public void close() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("close", null);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -1619,12 +1531,8 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
     public int getMaxFieldSize() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxFieldSize", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -1652,11 +1560,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(max)));
         JDBCMethod method = new JDBCMethod("setMaxFieldSize", paramList);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -1676,12 +1580,8 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
     public int getMaxRows() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getMaxRows", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -1703,11 +1603,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(max)));
         JDBCMethod method = new JDBCMethod("setMaxRows", paramList);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -1738,11 +1634,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("boolean", String.valueOf(enable)));
         JDBCMethod method = new JDBCMethod("setEscapeProcessing", paramList);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -1761,12 +1653,8 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
     public int getQueryTimeout() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getQueryTimeout", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Integer.parseInt(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
+        return Integer.parseInt(mr.getReturnValue());
     }
 
     /**
@@ -1801,11 +1689,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("int", String.valueOf(seconds)));
         JDBCMethod method = new JDBCMethod("setQueryTimeout", paramList);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -1823,11 +1707,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
     public void cancel() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("cancel", null);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -1855,15 +1735,11 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         // throw new SQLFeatureNotSupportedException("SQLWarning getWarnings()");
         // call method on the server side
         JDBCMethod method = new JDBCMethod("getWarnings", null);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            if (mr != null) {
-                return new SQLWarning(mr.getReturnValue());
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
+        MethodResponse mr = callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
+        if (mr != null) {
+            return new SQLWarning(mr.getReturnValue());
+        } else {
+            return null;
         }
     }
 
@@ -1881,11 +1757,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
     public void clearWarnings() throws SQLException {
         // call method on the server side
         JDBCMethod method = new JDBCMethod("clearWarnings", null);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -1917,11 +1789,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", name));
         JDBCMethod method = new JDBCMethod("setCursorName", paramList);
-        try {
-            callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
     }
 
     /**
@@ -1963,12 +1831,8 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         ArrayList<Parameter> paramList = new ArrayList<>();
         paramList.add(new Parameter("java.lang.String", sql));
         JDBCMethod method = new JDBCMethod("execute", paramList);
-        try {
-            MethodResponse mr = callRemoteMethod(method);
-            return Boolean.parseBoolean(mr.getReturnValue());
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        MethodResponse mr = callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
+        return Boolean.parseBoolean(mr.getReturnValue());
     }
 
     /**
@@ -1987,11 +1851,7 @@ public class PegaPreparedStatement extends PegaStatement implements PreparedStat
         MethodResponse mr;
         // call the method on the server side
         JDBCMethod method = new JDBCMethod("getResultSet", null, ret.getGUID());
-        try {
-            mr = callRemoteMethod(method);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage());
-        }
+        mr = callRemoteMethod(client, getRemoteInstanceType(), getGUID(), method);
         if (mr != null) {
             ret.setMr(mr);
             resultSet = ret;

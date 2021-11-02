@@ -83,36 +83,43 @@ public class TestJDBC {
         myInfo.setProperty("dbName", "PegaRULES");
 
 
-        try (Connection conn = DriverManager.getConnection(url, myInfo)) {
+            try (Connection conn = DriverManager.getConnection(url, myInfo)) {
 
-            SQLWarning w = conn.getWarnings();
+                SQLWarning w = conn.getWarnings();
 
-            CallableStatement cStmt = conn.prepareCall("{ ? = call upper( ? ) }");
-            cStmt.registerOutParameter(1, Types.VARCHAR);
-            cStmt.setString(2, "lowercase to uppercase");
-            cStmt.execute();
-            String upperCased = cStmt.getString(1);
-            cStmt.close();
+                CallableStatement cStmt = conn.prepareCall("{ ? = call upper( ? ) }");
+                cStmt.registerOutParameter(1, Types.VARCHAR);
+                cStmt.setString(2, "lowercase to uppercase");
+                cStmt.execute();
+                String upperCased = cStmt.getString(1);
+                cStmt.close();
 
 
-            String sqlp = "select pyLabel,pyGUID from pr_myco_myapp_data_test where pylabel=?";
-            sqlp = "select * from pg_catalog.pg_settings";
-            sqlp = "SELECT n.oid,n.*,d.description FROM pg_catalog.pg_namespace n\n" +
-                    "LEFT OUTER JOIN pg_catalog.pg_description d ON d.objoid=n.oid AND d.objsubid=0 AND d.classoid='pg_namespace'::regclass\n" +
-                    " WHERE nspname='data' ORDER BY nspname";
-            //sqlp = " SELECT c.relname,a.*,pg_catalog.pg_get_expr(ad.adbin, ad.adrelid, true) as def_value,dsc.description FROM pg_catalog.pg_attribute a INNER JOIN pg_catalog.pg_class c ON (a.attrelid=c.oid) LEFT OUTER JOIN pg_catalog.pg_attrdef ad ON (a.attrelid=ad.adrelid AND a.attnum = ad.adnum) LEFT OUTER JOIN pg_catalog.pg_description dsc ON (c.oid=dsc.objoid AND a.attnum = dsc.objsubid) WHERE NOT a.attisdropped AND c.oid=? ORDER BY a.attnum \n";
+                String sqlp = "select pyLabel,pyGUID from pr_myco_myapp_data_test where pylabel=?";
+                sqlp = "select * from pg_catalog.pg_settings";
+                sqlp = "SELECT n.oid,n.*,d.description FROM pg_catalog.pg_namespace n\n" +
+                        "LEFT OUTER JOIN pg_catalog.pg_description d ON d.objoid=n.oid AND d.objsubid=0 AND d.classoid='pg_namespace'::regclass\n" +
+                        " WHERE nspname='data' ORDER BY nspname";
+                sqlp = " SELECT c.relname,a.*,pg_catalog.pg_get_expr(ad.adbin, ad.adrelid, true) as def_value,dsc.description FROM pg_catalog.pg_attribute a INNER JOIN pg_catalog.pg_class c ON (a.attrelid=c.oid) LEFT OUTER JOIN pg_catalog.pg_attrdef ad ON (a.attrelid=ad.adrelid AND a.attnum = ad.adnum) LEFT OUTER JOIN pg_catalog.pg_description dsc ON (c.oid=dsc.objoid AND a.attnum = dsc.objsubid) WHERE NOT a.attisdropped AND c.oid=? ORDER BY a.attnum \n";
 
-            //sqlp="EXPLAIN (FORMAT XML) SELECT sa.* FROM pg_catalog.pg_stat_activity sa";
-          /*  PreparedStatement preparedStatement = conn.prepareStatement(sqlp);
-            preparedStatement = conn.prepareStatement(sqlp);
+                //sqlp="EXPLAIN (FORMAT XML) SELECT sa.* FROM pg_catalog.pg_stat_activity sa";
+            /*    sqlp="SELECT  O.*," +
+                        "t.TABLE_TYPE_OWNER,t.TABLE_TYPE,t.TABLESPACE_NAME,t.PARTITIONED,t.IOT_TYPE,t.IOT_NAME,t.TEMPORARY,t.SECONDARY,t.NESTED,t.NUM_ROWS" +
+                        " FROM ALL_OBJECTS O " +
+                        ", ALL_ALL_TABLES t WHERE t.OWNER(+) = O.OWNER AND t.TABLE_NAME(+) = o.OBJECT_NAME " +
+                        "AND O.OWNER='PEGA_DATA_MARKETING' AND O.OBJECT_TYPE IN ('TABLE', 'VIEW', 'MATERIALIZED VIEW')";
+           */
+                PreparedStatement preparedStatement = conn.prepareStatement(sqlp);
 
-            //preparedStatement.setLong(1, 495249);
-            //preparedStatement.setString(1,"asdasf");
-            //preparedStatement.setFetchSize(100);
-            preparedStatement.execute();
-            ResultSet rsp = null;
-            rsp = preparedStatement.getResultSet();
-            //rsp = preparedStatement.executeQuery();
+                preparedStatement = conn.prepareStatement(sqlp);
+
+                //preparedStatement.setLong(1, 495249);
+                // preparedStatement.setString(1,"asdasf");
+                //preparedStatement.setFetchSize(100);
+                preparedStatement.execute();
+                ResultSet rsp = null;
+                rsp = preparedStatement.getResultSet();
+                //rsp = preparedStatement.executeQuery();
             ResultSetMetaData rspMetaData = rsp.getMetaData();
             //int r =preparedStatement.executeUpdate();
 
@@ -121,7 +128,7 @@ public class TestJDBC {
                     System.out.println("CName: " + rspMetaData.getColumnName(i) + ", CValue: " + rsp.getInt(i));
                 }
 
-            preparedStatement.close();*/
+                preparedStatement.close();
 
             String sql = "select pyLabel,pyGUID from pr_myco_myapp_data_test";
             Statement stmt = conn.createStatement();
@@ -129,6 +136,7 @@ public class TestJDBC {
 
 
             String query = "select 'a' as b, 'b' as b";
+                query = "select * from dual";
             ResultSet myrs4 = stmt.executeQuery(query);
 
             while (myrs4.next()) {

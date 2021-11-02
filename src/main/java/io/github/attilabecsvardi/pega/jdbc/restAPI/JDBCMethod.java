@@ -1,9 +1,11 @@
-package io.github.attilabecsvardi.jersey.client;
+package io.github.attilabecsvardi.pega.jdbc.restAPI;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.Produces;
+//import jakarta.ws.rs.Consumes;
+//import jakarta.ws.rs.Produces;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.Produces;
 import java.io.Serializable;
 import java.util.ArrayList;
 
